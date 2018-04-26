@@ -348,7 +348,7 @@ df1 %>% ggplot(aes(x=team, y=count, fill=type))+
   theme_scientific()
 ```
 
-Unlike other leagues, NBA does not have a fixed number of games for each team. Therefore, it will be pointless to compare the performance of each team sololy based on the number of wins without considering the total matches played. From this simple plot, we can observe that the WAS played the largest number of games while GSW played the smallest number of games. Interestingly, these two team suffice to demonstrate our initial statement on absolute number of wins. WAS has the largest number of wins in the League. However, the highest winning rate comes from GSW despite its relative small number of wins.
+Clutch time, which means the scores of two teams are closed at the end of one game, is thrilling and exciting. However, the number of clutch games is not determined and it may be the most important time in a game, because in the clutch time both team have chance to win and the team who has better performance can take the win, the team with worse performance will waste a night. From this simple plot, we can observe that the WAS played the largest number of cluth time, actually almost 2/3 games in the season for WAS have clutch time, on the other hand, GSW played the least. Also, usually we think a better team is more united and can win the game in the clutch time, and the plot proves that, from the plot we can see the world champion in last year GSW has a very high rate of win in clutch time, that means in some games that two teams have fair performance, GSW can usually take the win back to the bay area; however, the BKN which ranked last one in the league last season, lose almost all clutch games.  
 
 
 <br>
@@ -380,7 +380,8 @@ df1 %>% ggplot(aes(x=team, y=count, fill=type))+
   scale_y_continuous(breaks = pretty(df1$count),labels = abs(pretty(df1$count)))+
   theme_scientific()
 ```
-We have seen this graph above for rounding pattern. The reason we bring up this plot again is due to its relationship with the following plot on aggressiveness and defensiveness. From this plot, we can see that the upperside of the graph has higher TOV and higher PF on average. There is a slight positive correlation between the two statistics. 
+
+We have seen this graph above for rounding pattern. The reason we bring up this plot again is due to its relationship with the following plot on concentration at the clutch time. In the clutch time, there are two things we should avoid, consider this two scenario: at the last 10 seconds, your team down 2 points to the opponent but hold the possession, that means you have the last chance to tie or win the game, however what if you turnover and give the possession to the opponent? Or if you lead 1 point in the last 10 seconds, but what if you foul on James Harden and give him two free throws (2 points potential)? So at the clutch time, your coach must require you to avoid turnovers and fouls. As we said above, better team should has fewer turnovers and fouls. From the plot we can find out PHI gave most turnover and one of the most fouls at the clutch time, which accords its rank(second to last in the eastern conference) in the league, the same thing is for SAC(third to last in the western conference).
 
 
 <br>
@@ -413,7 +414,8 @@ df1 %>% ggplot(aes(x=team, y=count, fill=type))+
   scale_y_continuous(breaks = pretty(df1$count),labels = abs(pretty(df1$count)))+
   theme_scientific()
 ```
-This plot gives us a very direct visual presentation on the decomposition of points by different teams. There is a pretty obvious negative relationship between 2PT and FT. A team like TOR has the highest percentage of 2PT and a very low percentage of 3pt. However, CLE is completely opposite side. We have mentioned these two names as they will provide a very good interactive in the following plots on team aggressiveness and defensiveness.
+
+This plot gives us a very direct visual presentation on the decomposition of shooting percent of points by different teams. In the clutch time, teams usually use the most familiar tactics they have, so in the plot, we can easily analyse the strategies of each team, so for defensive coaches, maybe they can provide corrsponding the right defensive strategies. For TOR, it has the best two points shoot percent, it can be explained by that the best player of this team Demar DeRozan is one of the best player in mid-range jump shoot, however it had one of the worst 3 points shoot percent in the league, maybe also because Demar DeRozan did not shoot 3 points usually, so for the opponents of TOR, they can leave some distance for TOR's players to shoot three but give much tenser defense for 2 points shoot in the clutch time. On the other hand, HOU as a team devoted for three points shoot, its 3 points percent is pretty high but it has lower two points shoot percent, so for HOU, we should give more denfense to 3 points shoot but leave more space for mid-range shoot.
 
 
 
@@ -459,6 +461,8 @@ We would expect an aggressive team to have a higher number of personal foul. How
 
 
 Interaction between scoring decomposition plots and agg-def plot. Does how aggressive or defensive a team affect the way they score? The answer is easy to tell by comparing the plots on scoring decomposition plots and agg-def. As we have mentioned before: TOR has the highest percentage of 2PT and a very low percentage of 3pt. However, CLE is completely opposite side. We can observe that TOR has a very high defensive rating while CLE has a very high offensive rating. One potential explanation will be that 3 pts is viewed as a much riskier and more offensive scoring method as compared to the much safer 2 pts. 
+
+Also, for teams have both bad performance in offense and defensive like PHI, MIA, BKN, PHX, they are all young team and the best players in those team are usually under 22 years old, we can safely say that rookies can not take as much pressure as veterans can take.
 <br>
 <br>
 <br>
