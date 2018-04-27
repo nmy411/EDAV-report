@@ -921,7 +921,7 @@ df_pts_v1_2 = df_pts_v1[!is.na(df_pts_v1$TSP),]
 
 p_TSP_All = ggplot(df_pts_v1_2)+
   geom_point(aes(X5min_plusminus_5,TSP,color = player_name,shape = Team_Name),size = 2)+
-  labs(title = "TSP VS PTS All Star",x = PTS', y='TSP')
+  labs(title = "TSP VS PTS All Star",x = 'PTS', y='TSP')
 ggplotly(p_TSP_All)
 
 ```
