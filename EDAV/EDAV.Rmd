@@ -97,7 +97,7 @@ The National Basketball Association (NBA) is a men's professional basketball lea
 Specifically, we believe that the performance of team or individual player in clutch time is of great importance. Clutch time is defined as the game play that takes place during the final five minutes of regulation or overtime where the winning team is ahead by five points or less. This is a vital moment when perseverance, team play and great talent shine. Therefore we hope to understand the performance of players and teams in such exciting time and hopefully we can propose stategies for individule teams. In this project we mainly use clutch time data in the season 16-17, because the season 17-18 has not yet came out.
 
 We analyzed the NBA numerical statistic data and Twitter data to propose stategies for individule teams during clutch time
-and to discover what are the hot topics for each individule team (do they differe accross teams and how do they form the overall NAB twitts.)<br>
+and to discover what are the hot topics for each individule team (do they differe accross teams and how do they form the overall NBA tweets.)<br>
 
 Our team is comprised of 4 members: Haoran Li(hl3083), Haozheng Ni(hn2318), Mingyang Ni(mn2813
 ), Chuqi Yang(cy2478). Haoran Li is in charge of making use of static methods to analyze the relationship between various factors. Haozheng Ni takes the responsibility of creating interactive applications in Shiny. Mingyang Ni linked various parts together and produces the final reports. Chuqi Yang carried data collection, data cleaning and feeding process.
@@ -156,17 +156,17 @@ Data inconsistency: There are several data inconsistency issues with our data se
 
 2. Twitter Data:
 
-We used Twitter official API to retrieve all the live tweets. We filtered the twitts to contain only posts that are related to NBA. We recorded the time and text, and separate them into different teams. Specifically, we used Python’s tweeps package to establish a listener to receive data from Twitter Server, the mechanism is as long as there is a tweet with the keywords defined beforehand posted, the listener can receive the raw data which contains all the information of this tweet. Ideally, as long as there is new twitts, we will be able to retrive it and analyze it, however, we only takes twitts from 15:37:45 to 21:06:15(GMT Timezoon) Fri Apr 20 because this segmentation already provides a 7.64MB text data and is enough for the purpose of this project demonstration.
+We used Twitter official API to retrieve all the live tweets. We filtered the tweets to contain only posts that are related to NBA. We recorded the time and text, and separate them into different teams. Specifically, we used Python’s tweeps package to establish a listener to receive data from Twitter Server, the mechanism is as long as there is a tweet with the keywords defined beforehand posted, the listener can receive the raw data which contains all the information of this tweet. Ideally, as long as there is new tweets, we will be able to retrive it and analyze it, however, we only takes tweets from 15:37:45 to 21:06:15(GMT Timezoon) Fri Apr 20 because this segmentation already provides a 7.64MB text data and is enough for the purpose of this project demonstration.
 
 The raw data is in json format, because the text we received is a string, it is hard to use existing package to analyse it automatically, so we extracted all the information by ourselves. For this project, we extracted the post time and tweet's text from json data, then cleaned the data by removing special chactacters, URL, etc. 
 
 After cleaning, we assigned the data to different dataset: for each team, if the team's name is mentioned in the tweet we would assign this data to the team's dataset. 
 
-Therefore, at the end, we are able to obtain 1 file for all twitts that are related to NBA, and multiple subet files that record the NBA Team pecific twitts. 
+Therefore, at the end, we are able to obtain 1 file for all tweets that are related to NBA, and multiple subet files that record the NBA Team pecific tweets. 
 
 Some questions we are asking are:
-- what are the hot topics for each individule team (do they differe accross teams and how do they form the overall NAB twitts)
-- Is there a time difference accross teams, meaning does one team always have twitts in certain hours that other teams hardly have. (Amazingly YES!)
+- what are the hot topics for each individule team (do they differe accross teams and how do they form the overall NBA tweets)
+- Is there a time difference accross teams, meaning does one team always have tweets in certain hours that other teams hardly have. (Amazingly YES!)
 
 To answer the second question, we checked if there is any missing patterns in Twitter data(missing in terms of time). We first collected all timestamps of all tweets we received. For each timestamp, if any team does not have any tweet, we recorded that this team has a missing data at this timestamp.
 <br>
