@@ -89,10 +89,11 @@ knitr::opts_chunk$set(echo = TRUE)
 <br>
 
 
-The National Basketball Association (NBA) is a men's professional basketball league in North America. It is widely considered as the one of the most popular and successful leagues in the world. There is a huge market behind it which is supported by mature methodologies to analyze the performance and values of the players and the teams. However, we believe that these proven approaches towards NBA players and teams are not the only waies to carry out meaningful analysis of the players and the teams. In our report, we have looked at several seemingly random aspects and eventually shown that they are intrinsically related to the performance of the teams and the players. Integrating the new approach and the well proven approaches can bring us valuable insights into this indusry. 
+The National Basketball Association (NBA) is a men's professional basketball league in North America. It is widely considered as the one of the most popular and successful leagues in the world. There is a huge market behind it which is supported by mature methodologies to analyze the performance and values of the players and the teams. However, we believe that these proven approaches towards NBA players and teams are not the only waies to carry out meaningful analysis. In our report, we have looked at several seemingly random aspects and eventually shown that they are intrinsically related to the performance of the teams and the players. Integrating the new approach and the well proven approaches can bring us valuable insights into this indusry. 
 <br>
-
-Our team is comprised of 4 members:Haoran Li, Haozheng Ni, Mingyang Ni, Chuqi Yang. Haoran Li is in charge of making use class-room methods to analysis the relationship between various factors. Haozheng Ni takes the responsibility of creating an interactive plot in Shiny. Mingyang Ni linked various parts together and produces the final reports. Chuqi Yang carried initial data collection and data cleaning.
+Specifically, we realize the performance of team or individual player in clutch time is of great importance. Clutch time is defined as the game play that takes place during the final five minutes of regulation or overtime where the winning team is ahead by five points or less. This is a vital moment when perseverance, team play and great talent shine. Therefore we hope to understand the performance of player and team in such exciting time and hopefully we can propose stategies for teams. In this project we mainly use clutch time data in the season 16-17, because the season 17-18 has not finished yet.
+<br>
+Our team is comprised of 4 members:Haoran Li, Haozheng Ni, Mingyang Ni, Chuqi Yang. Haoran Li is in charge of making use  methods taught in class to analysis the relationship between various factors. Haozheng Ni takes the responsibility of creating an interactive app in Shiny. Mingyang Ni linked various parts together and produces the final reports. Chuqi Yang carried initial data collection and data cleaning.
 
 <br>
 <br>
@@ -103,7 +104,7 @@ Our team is comprised of 4 members:Haoran Li, Haozheng Ni, Mingyang Ni, Chuqi Ya
 <br>
 <br>
 
-We have two main sources of data. The numerical data comes from http://stats.nba.com/. This is an official site for NBA data which is very reliable. At the same time, the quality of the data is very high with no missing values or irregular data. The text data comes from twitter API. This set of data is much more challenging as compared to the numerical data. We have carried out extensive cleaning of the data to make it into a usable format. The NBA numerical data has exhibited some very interesting features, such as rounding pattern. We will illustrate in details in the following part.
+We have two main sources of data. The numerical data come from http://stats.nba.com/. This is an official website for NBA, and thus the data are very reliable. At the same time, the quality of the data is very high with no missing values or irregular data. The text data come from twitter API. This set of data is much more challenging as compared to the numerical data. We have carried out extensive cleaning of the data to make it into a usable format. The NBA numerical data have exhibited some very interesting features, such as rounding pattern. We will illustrate in details in the following part.
 
 <br>
 <br>
@@ -114,7 +115,12 @@ We have two main sources of data. The numerical data comes from http://stats.nba
 <br>
 <br>
 
-Since the numerical data is taken from the official site. We did not observe any missing values or irregular data. The quality of the data is very high. However, during our analysis, we discovered a rounding pattern. We also discovered a pattern in the twitter data.
+We obtained the team-level and player-level data directly from the official website of NBA (through public API in python), and the data are in clean format and high quality. We did not observe any missing values or abnormal data. However, during our analysis, we discovered a rounding pattern. <br>
+
+For twitter data, we use the Twitter Streamy API to retrieve tweets related with NBA teams. Since each tweet contains noisy information such as links, emojis etc, we went through many filters. ........Chuqi......<br>
+
+Next we would like to introduce some findings in the NBA and twitter data itself.
+
 <br>
 <br>
 <br>
@@ -124,7 +130,7 @@ Since the numerical data is taken from the official site. We did not observe any
 <br>
 <br>
 
-```{r results='hide', message=FALSE, warning=FALSE}
+```{r }
 library(devtools)
 library(rgdal)
 library(GGally)
@@ -167,7 +173,8 @@ df1 %>% ggplot(aes(x=team, y=count, fill=type))+
   theme_scientific()
 ```
 <br>
-From this plot, we can observe a very obvious rounding pattern for the turnovers between teams. We can see that the turnovers are in groups of a few step sizes. This is very likely to be caused by the rounding in the data.
+This plot displays average personal fouls and turnovers during clutch time for each team in the season of 16-17. This is of interest because it shows how teams control faults in face of vital moment. The interpretation will be in later section, but  we can observe a very obvious rounding pattern for the turnovers among teams. We can see that the turnovers are in groups of a few step sizes. This is very likely to be caused by the rounding in the data.
+
 
 
 
@@ -181,7 +188,7 @@ From this plot, we can observe a very obvious rounding pattern for the turnovers
 <br>
 <br>
 
-```{r results='hide', message=FALSE, warning=FALSE}
+```{r }
 ## Preprocess data to merge with the team 
 df_name_team = read.csv(paste(location, 'Name_Team.csv', sep=""))
 df_name_team = df_name_team[,c("PERSON_ID","Team_Name")]
@@ -240,7 +247,7 @@ From this plot, we can observe the free throw made and free throw attempt are ro
 <br>
 <br>
 
-```{r results='hide', message=FALSE, warning=FALSE}
+```{r}
 pro_76 = read.csv("C:/Users/Mingyang/Desktop/NBA_data/Twitter/By Team/preprocessed_76ers.csv",
                   colClasses=c("NULL", NA, NA))
 pro_spurs =read.csv("C:/Users/Mingyang/Desktop/NBA_data/Twitter/By Team/preprocessed_Spurs.csv",
@@ -258,7 +265,7 @@ names(temp_1) = c("time","76er", "spurs","pro_warriours","pro_lakers")
 temp_1[temp_1=="[]"]=NA
 ```
 
-```{r fig.height = 18, fig.width = 6, fig.align = "center" ,results='hide', message=FALSE, warning=FALSE}
+```{r fig.height = 18, fig.width = 6, fig.align = "center"}
 #mydf = temp_1[sample(nrow(temp_1), 1000), ]## random sample 1000 rows/records
 
 my_missing = function(seg,title){
@@ -277,7 +284,7 @@ my_missing = function(seg,title){
 }
 ```
 
-```{r fig.height = 15, fig.width = 15, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
+```{r fig.height = 15, fig.width = 15, fig.align = "center"}
 ###data is too huge seperate based on time to see pattern:
 #### 	02:00:00-5:00:00
 p1 = my_missing(temp_1[1:213,],title = "Missing 02:00:00-5:00:00")
@@ -326,7 +333,7 @@ In our report, we have taken the Macro to Micro approach. We start with a brief 
 <br>
 <br>
 
-```{r results='hide', message=FALSE, warning=FALSE }
+```{r }
 
 #number of games played vs number of wins
 df1 = clutch[,c('GP','W','team')]
@@ -348,7 +355,7 @@ df1 %>% ggplot(aes(x=team, y=count, fill=type))+
   theme_scientific()
 ```
 
-Clutch time, which means the scores of two teams are closed at the end of one game, is thrilling and exciting. However, the number of clutch games is not determined and it may be the most important time in a game, because in the clutch time both team have chance to win and the team who has better performance can take the win, the team with worse performance will waste a night. From this simple plot, we can observe that the WAS played the largest number of cluth time, actually almost 2/3 games in the season for WAS have clutch time, on the other hand, GSW played the least. Also, usually we think a better team is more united and can win the game in the clutch time, and the plot proves that, from the plot we can see the world champion in last year GSW has a very high rate of win in clutch time, that means in some games that two teams have fair performance, GSW can usually take the win back to the bay area; however, the BKN which ranked last one in the league last season, lose almost all clutch games.  
+This is the plot of number of clutch games played and wins for each team. Since clutch games played is always a superset of cltch wins, we plot number of wins(in red) inside total number of clutch games (in blue) to represent the ratio. From this simple plot, we can observe that the WAS played the largest number of cluth time, actually almost 2/3 games in the season for WAS（Washington Wizards) have clutch time. On the other hand, GSW(Golden State Warriors) played the least. Note that less clutch games does not necessarily mean the team is better, because chances are that they lose the game without entering clutch time. Howver, in general more clutch games show that the team cannot finish opponents with overwhelming advantages. Meanwhile, usually we think a better team is more united and can win the game in the clutch time, and the plot proves that. From the plot we can see the world champion in last year, GSW(Golden State Warriors), has a very high rate of win in clutch time, that means in some games that two teams have fair performance, GSW can usually take the win back to the bay area; however, the BKN(Brooklyn Nets）which ranked last one in the league last season, loses almost all clutch games.  
 
 
 <br>
@@ -360,7 +367,7 @@ Clutch time, which means the scores of two teams are closed at the end of one ga
 <br>
 <br>
 
-```{r results='hide', message=FALSE, warning=FALSE}
+```{r }
 
 df1 = clutch[,c('PF','TOV','team')]
 df1= gather(df1,type,count,-team)
@@ -381,8 +388,7 @@ df1 %>% ggplot(aes(x=team, y=count, fill=type))+
   theme_scientific()
 ```
 
-We have seen this graph above for rounding pattern. The reason we bring up this plot again is due to its relationship with the following plot on concentration at the clutch time. In the clutch time, there are two things we should avoid, consider this two scenario: at the last 10 seconds, your team down 2 points to the opponent but hold the possession, that means you have the last chance to tie or win the game, however what if you turnover and give the possession to the opponent? Or if you lead 1 point in the last 10 seconds, but what if you foul on James Harden and give him two free throws (2 points potential)? So at the clutch time, your coach must require you to avoid turnovers and fouls. As we said above, better team should has fewer turnovers and fouls. From the plot we can find out PHI gave most turnover and one of the most fouls at the clutch time, which accords its rank(second to last in the eastern conference) in the league, the same thing is for SAC(third to last in the western conference).
-
+We have seen this graph above for rounding pattern. The reason we bring up this plot again is due to its relationship with the following plot on concentration at the clutch time. In the clutch time, there are two things we should avoid, consider this two scenario: at the last 10 seconds, your team down 2 points to the opponent but hold the possession, that means you have the last chance to tie or win the game, however what if you turnover and give the possession to the opponent? Or if you lead 1 point in the last 10 seconds, but what if you foul on James Harden and give him two free throws (2 points potential)? So at the clutch time, your coach must require you to avoid turnovers and fouls. As we said above, better team should has fewer turnovers and fouls. From the plot we can find out PHI(Philadelphia 76ers) gave most turnover and one of the most fouls at the clutch time, which accords its rank(second to last in the eastern conference) in the league, the same thing is for SAC(Sacramento Kings, third to last in the western conference). Moreover, there is no team that has smallest numbers in both turnovers and fouls, which can be interpreted as there is no dominating team in terms of fault control in clutch time. 
 
 <br>
 <br>
@@ -395,7 +401,7 @@ We have seen this graph above for rounding pattern. The reason we bring up this 
 <br>
 <br>
 
-```{R results='hide', message=FALSE, warning=FALSE}
+```{R}
 df1 = clutch[,c('PCT_PTS_2PT','PCT_PTS_3PT','PCT_PTS_FT','team')]
 df1= gather(df1,type,count,-team)
 temp =  df1[df1$type=='PCT_PTS_2PT',]
@@ -415,8 +421,7 @@ df1 %>% ggplot(aes(x=team, y=count, fill=type))+
   theme_scientific()
 ```
 
-This plot gives us a very direct visual presentation on the decomposition of shooting percent of points by different teams. In the clutch time, teams usually use the most familiar tactics they have, so in the plot, we can easily analyse the strategies of each team, so for defensive coaches, maybe they can provide corrsponding the right defensive strategies. For TOR, it has the best two points shoot percent, it can be explained by that the best player of this team Demar DeRozan is one of the best player in mid-range jump shoot, however it had one of the worst 3 points shoot percent in the league, maybe also because Demar DeRozan did not shoot 3 points usually, so for the opponents of TOR, they can leave some distance for TOR's players to shoot three but give much tenser defense for 2 points shoot in the clutch time. On the other hand, HOU as a team devoted for three points shoot, its 3 points percent is pretty high but it has lower two points shoot percent, so for HOU, we should give more denfense to 3 points shoot but leave more space for mid-range shoot.
-
+This plot gives us a very direct visual presentation on the decomposition of shooting percent of points by different teams. It contains the proportion of 3 points, 2 points and free throw for each team, and all sum as 1. In the clutch time, teams usually use the most familiar tactics they have, so in the plot, we can easily analyse the strategies of each team. For defensive coaches, maybe they can come up with corresponding defense strategies. For TOR(Toronto Raptors), it has largest proportion of 2-point field goal, it can be explained by that the best player of this team Demar DeRozan is one of the best players in mid-range jump shoot. As a natural result, it has one of the worst 3 points shoot percent in the league, maybe also because Demar DeRozan did not shoot 3 points very often. Therefore the oponents can leave some space for TOR's players to shoot three, but they should focus on preventing TOR shooters come closer to the basket. On the other hand, HOU(Houston Rockets) as a team devoted for three points shoot, its 3 points percentage is pretty high but it has lower two points shoot percens. The the opponets can tolerate some mid-range shoots but shoud definitely push harder Three-point line.
 
 
 <br>
@@ -428,7 +433,7 @@ This plot gives us a very direct visual presentation on the decomposition of sho
 <br>
 <br>
 
-```{R results='hide', message=FALSE, warning=FALSE}
+```{R}
 
 library(png)
 library(ggplot2)
@@ -449,20 +454,20 @@ In this part of the analysis, we will provide an analysis on the interaction bet
 <br>
 
 
-The scatter plot provide us a demonstration of how offensive or defensive the team is. We can observe that MIL is a very defensive team with a very low offensive rating. BOS is a very offensive team with the highest offensive rating. 
+The scatter plot provides us a demonstration of how offensive or defensive the team is during clutch time. The exact definition of offensive rating and defensive rating are quite complicated so we omit it here. Intuitively the higher offensive rating this team is , the more goals it can make, while the less defensive rating means opponents can make less points. We can observe that MIL is a very defensive team with a very low offensive rating. BOS(Boston Celtics) is a very offensive team with the highest offensive rating while its defensive ability is not outstanding enough. 
 <br>
 
-Teams like OKC, SAS and WAS have high ratings for both scale. This is an indication of their strong performance in both defence and offence which is the quality of a strong team. This is further supported by our plot on total matches played and number of wins. WAS has the highest number of absolute wins. OKC and SAS have their winning rate among the top 5. 
-<br>
-
-
-We would expect an aggressive team to have a higher number of personal foul. However, by comparing the plot on personal fouls and the offensive rating. There does not seem to be a direct relationship between them.
+Teams like OKC(Oklahoma City Thunder), SAS(San Antonio Spurs) and WAS(Washington Wizards) have high ratings in both scales. This is an indication of their strong performance in both defence and offence which can be seen as a proof for strong teams. This is further supported by our plot on total clutch games matches played and number of wins. WAS has the highest number of absolute wins. OKC and SAS have their winning rate among the top 5. 
 <br>
 
 
-Interaction between scoring decomposition plots and agg-def plot. Does how aggressive or defensive a team affect the way they score? The answer is easy to tell by comparing the plots on scoring decomposition plots and agg-def. As we have mentioned before: TOR has the highest percentage of 2PT and a very low percentage of 3pt. However, CLE is completely opposite side. We can observe that TOR has a very high defensive rating while CLE has a very high offensive rating. One potential explanation will be that 3 pts is viewed as a much riskier and more offensive scoring method as compared to the much safer 2 pts. 
+We would expect an aggressive team to have a larger number of personal foul. However, by comparing the plot on personal fouls and the offensive rating. There does not seem to be a direct relationship between them. This means that a team with good defense ability does not mean they will incur more personal fouls.
+<br>
 
-Also, for teams have both bad performance in offense and defensive like PHI, MIA, BKN, PHX, they are all young team and the best players in those team are usually under 22 years old, we can safely say that rookies can not take as much pressure as veterans can take.
+
+Interaction between score decomposition plots and defense-offense plot is also very interesting. Is there a relation between aggressiveness and the way they score? As we have mentioned before: TOR has the highest percentage of 2PT and a very low percentage of 3pt. However, CLE is completely opposite side. We can observe that TOR has a very high defensive rating while CLE has a very high offensive rating. One potential explanation will be that 3 pts is viewed as a much riskier and more offensive scoring method as compared to the much safer 2 pts.
+
+In the mean time, for teams have bad performance in both offense and defensive like PHI, MIA, BKN, PHX, they are all young teams (in terms of average ages of players) and the best players in those teams are usually under 22 years old. We can safely say that rookies can not take as much pressure as veterans can take, so in general they perform worse when the big moment comes.
 <br>
 <br>
 <br>
@@ -472,7 +477,7 @@ Also, for teams have both bad performance in offense and defensive like PHI, MIA
 <br>
 <br>
 <br>
-```{r fig.height = 5, fig.width = 8, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
+```{r fig.height = 5, fig.width = 8, fig.align = "center"}
 # Define FGA: Field Goal Attempt 
 FGA = df_fgm$overall / df_fct$overall
 # Define TSP: True shooting percent 
@@ -540,7 +545,7 @@ In the section, we zoom down to the top 2 and bottom 2 teams in both the east an
 <br>
 <br>
 <br>
-```{r results='hide', message=FALSE, warning=FALSE}
+```{r}
 #Plot on Top4 Last4
 df_3pct['df_3fgm_overall']=df_3fgm$overall
 df_pct3_v1 =  df_3pct
@@ -564,7 +569,7 @@ This is a traditional method to analyze the performance of the team. 3 points is
 <br>
 ###Team Average Overall fgm
 
-```{r fig.height = 5, fig.width = 5, fig.align = "center", results='hide', message=FALSE, warning=FALSE}
+```{r fig.height = 5, fig.width = 5, fig.align = "center"}
 ##==================================================================
 #Plot on All team
 
@@ -603,7 +608,7 @@ Team average overall fgm is a very important traditional factor to measure the p
 ### Coordinates plot
 
 
-```{r fig.height = 5, fig.width = 14, fig.align = "center", results='hide', message=FALSE, warning=FALSE}
+```{r fig.height = 5, fig.width = 14, fig.align = "center"}
 
 # average within group 3point
 
@@ -663,7 +668,7 @@ p2 = ggparcoord(data = TopLow3point,
 ```
 
 
-```{r fig.height = 12, fig.width = 14, fig.align = "center", results='hide', message=FALSE, warning=FALSE}
+```{r fig.height = 12, fig.width = 14, fig.align = "center"}
 # average within group all point
 
 
@@ -739,7 +744,7 @@ From this coordinates plot we can observe here that, traditonal performance meas
 <br>
 
 ### Further analysis on 30s clutch time
-```{r fig.height = 5, fig.width = 8, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
+```{r fig.height = 5, fig.width = 8, fig.align = "center"}
 ##==================================================================
 #Plot on ALL
 df_pct['df_fgm_overall']=df_fgm$overall
@@ -776,7 +781,7 @@ In the plot, we take a deeper look at the final 30s when the score is tight. Thi
 
 
 ### 3pts average 10second down figure plot
-```{r fig.height = 5, fig.width = 8, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
+```{r fig.height = 5, fig.width = 8, fig.align = "center"}
 ##==================================================================
 #Plot on All Teams
 averagepoint=averagepoint[2:31,]
@@ -851,7 +856,7 @@ During our analysis, we have looked have a large number of plots and explored ma
 ### TSP VS PTS All Star
 <br>
 
-```{r fig.height = 5, fig.width = 8, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
+```{r fig.height = 5, fig.width = 8, fig.align = "center"}
 # Define FGA: Field Goal Attempt 
 FGA = df_fgm$overall / df_fct$overall
 # Define TSP: True shooting percent 
@@ -874,7 +879,7 @@ ggplotly(p_TSP_All)
 <br>
 <br>
 ### TSP VS PTS on X5min_plusminus_5
-```{r results='hide', message=FALSE, warning=FALSE}
+```{r}
 # Define FGA: Field Goal Attempt on X5min_plusminus_5
 FGA = df_fgm$X5min_plusminus_5 / df_fct$X5min_plusminus_5
 # Define TSP: True shooting percent 
@@ -896,7 +901,7 @@ ggplotly(p_TSP_All)
 <br>
 <br>
 ### 3pcts_overall VS 3fgm_overall
-```{r fig.height = 5, fig.width = 8, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
+```{r fig.height = 5, fig.width = 8, fig.align = "center"}
 ##==================================================================
 #Plot on All Team
 
@@ -912,7 +917,7 @@ ggplotly(p_3FGM3PCT_All)
 <br>
 <br>
 ### ftm_30sec_plusmiuns_5
-```{r fig.height = 5, fig.width = 8, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
+```{r fig.height = 5, fig.width = 8, fig.align = "center"}
 ##==================================================================
 #Plot on All teams
 
@@ -935,7 +940,7 @@ ggplotly(p_fta_ftm)
 <br>
 <br>
 ### 1min_down5 plot
-```{r fig.height = 15, fig.width = 15, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
+```{r fig.height = 15, fig.width = 15, fig.align = "center"}
 #Plot on Top4 Last4
 TopLowP_TSP_1 = df_pct[df_pct$Team_Name %in% TopLowTeam,]
 ggplot()+
@@ -953,11 +958,11 @@ ggplot()+
 
 
 ### pair plots
-```{r fig.height = 20, fig.width = 20, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
+```{r fig.height = 20, fig.width = 20, fig.align = "center"}
 pairs(df_all[c("X10sec_down_3.x","X10sec_down_3.y","X30sec_down_3.x","X30sec_down_3.y")])
 ```
 
-```{r fig.height = 20, fig.width = 20, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
+```{r fig.height = 20, fig.width = 20, fig.align = "center"}
 #df_all
 pairs(df_all[c("X1min_down_5.x","X1min_down_5.y",
                "X3min._down_5.x","X3min._down_5.y",
@@ -985,7 +990,7 @@ pairs(df_all[c("X30sec_plusminus_5.x","X30sec_plusminus_5.y",
 
 The target audience of our report is the sports team mangers or investors. We would like to focus more on the general performance of the team and how to devise strategies for the team based on our information. In the presentation, we will first start with the following plot: 
 
-```{r results='hide', message=FALSE, warning=FALSE }
+```{r }
 
 #number of games played vs number of wins
 df1 = clutch[,c('GP','W','team')]
@@ -1148,7 +1153,8 @@ In out plot, we only choose time as a horizon to select data. However, we believ
 
 While trying to publish the website, we encountered some difficulties. The program runs perfectly locally and we included all the package we have used in the code. I have also posted a question on the blog for R-users after taking the advice from the Professor. However, there does not seem to be any meaningful solution. One potential reason it because that our program is too large for it too load. We keep getting time out error. I have double checked with the professor and she confirmed that we can use the local version for our shoot map. The following code will allow you to run the program stored in my github.
 
-shiny::runGitHub("NBA", "NiHaozheng",subdir = "shoot map/")
+library(shiny)
+runGitHub("shootmap", "nmy411")
 
 <br>
 <br>
