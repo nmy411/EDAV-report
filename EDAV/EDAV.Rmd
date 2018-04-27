@@ -529,7 +529,7 @@ TopLowP_TSP['Rank'] = ifelse(TopLowP_TSP$Team_Name %in% c("Celtics","Cavaliers",
 p_TSP = ggplot(TopLowP_TSP)+
   geom_point(aes(X5min_plusminus_5,TSP,color = player_name,shape=Rank),size = 2)+
   facet_wrap(~Team_Name)+
-  labs(title = "TSP V.S PTS Facet on X5min_plusminus_5 Top4Last4",x = 'X5min_plusminus_5 PTS', y='X5min_plusminus_5 TSP')
+  labs(title = "TSP VS PTS with 5mins+/-5pts",x = 'PTS', y='TSP')
 ggplotly(p_TSP)
 ```
  <br>
