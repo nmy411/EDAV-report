@@ -118,7 +118,14 @@ We have two main sources of data. The numerical data come from http://stats.nba.
 
 We obtained the team-level and player-level data directly from the official website of NBA (through public API in python), and the data are in clean format and high quality. We did not observe any missing values or abnormal data. However, during our analysis, we discovered a rounding pattern. <br>
 
-For twitter data, we use the Twitter Streamy API to retrieve tweets related with NBA teams. Since each tweet contains noisy information such as links, emojis etc, we went through many filters. ........Chuqi......<br>
+For Twitter data: We use Twitter official API to retrieve all the live tweets posted regarding NBA; record the time and text, and separate them into different teams. Specifically, we use Python’s tweeps package to establish a listener to receive data from Twitter Server, the mechanism is as long as there is a tweet with the keywords defined beforehand posted, the listener can receive the raw data which contains all the information of this tweet. 
+
+The raw data is in json format, because the text we received is a string, it is hard to use existing package to analyse it automatically, so we extracted all the information by ourselves. For this project, we extracted the post time and tweet's text from json data, then cleaned the data by removing special chactacters, URL, etc. 
+
+After cleaning, we assigned the data to different dataset: for each team, if the team's name is mentioned in the tweet we would assign this data to the team's dataset.
+
+Finally, we want to find out missing data in Twitter data, so we first collected all timestamps of all tweets we received, and for each timestamp, if there is one team that is not mentioned in any tweet, we would decide the data of this team at this timestamp is missing.
+<br>
 
 Next we would like to introduce some findings in the NBA and twitter data itself.
 
@@ -236,7 +243,8 @@ p_fta_ftm = ggplot(df_fta_v1_2)+
 ggplotly(p_fta_ftm)
 ```
 <br>
-From this plot, we can observe the free throw made and free throw attempt are rounded to 0.1.
+
+The x-axis of this plot is the average of free throw attempt and y-axis is the average of free throw made by a player in the last 30 seconds with the difference of scores in 5 points between two teams. From the graph we can see that there is a obvious pattern in the data, for more than 300 players, the number of points in the scatter plot is less than 50.  And from the graph it is not hard to find out that both free throw attempt and free throw made data are rounded to one decimal.
 
 <br>
 <br>
