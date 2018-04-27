@@ -241,7 +241,7 @@ p_fta_ftm = ggplot(df_fta_v1_2)+
                  shape=Team_Name),
              size = 1.3,
              alpha=0.5)+
-  labs(title = "df_ftm_30sec_plusmiuns_5 V.S X30sec_plusminus_5 ",x = 'X30sec_plusminus_5', y='df_ftm_30sec_plusmiuns_5')
+   labs(title = "FTM VS FTA ",x = 'Free Throw Attempt', y='Free Throw Made')
 ggplotly(p_fta_ftm)
 ```
 <br>
