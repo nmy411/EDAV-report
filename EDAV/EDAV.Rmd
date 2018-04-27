@@ -921,7 +921,7 @@ df_pts_v1_2 = df_pts_v1[!is.na(df_pts_v1$TSP),]
 
 p_TSP_All = ggplot(df_pts_v1_2)+
   geom_point(aes(X5min_plusminus_5,TSP,color = player_name,shape = Team_Name),size = 2)+
-  labs(title = "TSP V.S PTS All Star",x = 'X5min_plusminus_5 PTS', y='X5min_plusminus_5 TSP')
+  labs(title = "TSP VS PTS All Star",x = PTS', y='TSP')
 ggplotly(p_TSP_All)
 
 ```
@@ -960,7 +960,7 @@ p_fta_ftm = ggplot(df_fta_v1_2)+
              size = 1.3,
              alpha=0.5,
             position = "jitter")+
-  labs(title = "df_ftm_30sec_plusmiuns_5 V.S X30sec_plusminus_5 ",x = 'X30sec_plusminus_5', y='df_ftm_30sec_plusmiuns_5')
+  labs(title = "FTA VS FTM 30sec+/-5pts",x = 'fta', y='ftm')
 ggplotly(p_fta_ftm)
 ```
 
