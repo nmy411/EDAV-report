@@ -99,6 +99,8 @@ Specifically, we believe that the performance of team or individual player in cl
 We analyzed the NBA numerical statistic data and Twitter data to propose stategies for individule teams during clutch time
 and to discover what are the hot topics for each individule team (do they differe accross teams and how do they form the overall NBA tweets.)<br>
 
+Along the we, we decided to focus our analysis on the Top 4 and Low 4 ranking NBA teams during the 2016-2017 season to see the difference accross them. 
+
 Our team is comprised of 4 members: Haoran Li(hl3083), Haozheng Ni(hn2318), Mingyang Ni(mn2813
 ), Chuqi Yang(cy2478). Haoran Li is in charge of making use of static methods to analyze the relationship between various factors. Haozheng Ni takes the responsibility of creating interactive applications in Shiny. Mingyang Ni linked various parts together and produces the final reports. Chuqi Yang carried data collection, data cleaning and feeding process.
 
@@ -358,7 +360,8 @@ grid.arrange(p2,p3,p4,p5,p6, nrow = 1)
 ```
 
 <br>
-From this plot, we can observe a pattern in the missing value of twitter data. The time range is included in the title. Each column represents a team and each row represents a time point. We can observe that there is a concentration of missing values in the bottom 30% of the data. we set up the time point in such a way that for all 31 teams, at each point there has to be at least one tweet from any team. The missing values for the current 4 teams will mean that there are tweets from other teams which are not shown here. We have carried out extensive research online and checked out data serveal times to make sure we did not make any mistake. However, we did not find a valid explanation for this pattern.
+In this plot, we want to discuss the missing value patterns in Twitter accross teams. Since the data is to long, in oder to facilitate visulization, we broke time into pices.  The time range is included in the title. Each column represents a team(phi, sas, gsw and lal) and each row represents a time point.
+From this plot, we can observe a pattern in the missing value of twitter data. We can observe that there is a concentration of missing values in the bottom 30% of the data. we set up the time point in such a way that for all 31 teams, at each point there has to be at least one tweet from any team. The missing values for the current 4 teams will mean that there are tweets from other teams which are not shown here. We have carried out extensive research online and checked out data serveal times to make sure we did not make any mistake. However, we did not find a valid explanation for this pattern.
 
 
 <br>
