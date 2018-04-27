@@ -1,0 +1,1294 @@
+---
+title: <center> <h1>EDAV final project on NBA </h1> </center>
+
+
+output:
+  html_document:
+    code_folding: hide
+    number_sections: true
+    toc: true
+sansfont: Calibri Light
+
+
+
+---
+
+\fontseries{b}
+\selectfont
+
+
+<style>
+body {
+text-align: justify}
+</style>
+
+<style type="text/css">
+
+body{ /* Normal  */
+      font-size: 18px;
+  }
+td {  /* Table  */
+  font-size: 8px;
+}
+h1.title {
+  font-size: 48px;
+  color: DarkRed;
+}
+h1 { /* Header 1 */
+  font-size: 38px;
+  color: DarkBlue;
+}
+h2 { /* Header 2 */
+    font-size: 28px;
+  color: DarkBlue;
+}
+h3 { /* Header 3 */
+  font-size: 22px;
+  font-family: "Times New Roman", Times, serif;
+  color: DarkBlue;
+}
+
+h4 { /* Header 4 */
+  font-size: 22px;
+  font-family: "Times New Roman", Times, serif;
+  color: DarkBlue;
+}
+code.r{ /* Code block */
+    font-size: 16px;
+}
+pre { /* Code block - determines code spacing between lines */
+    font-size: 18px;
+}
+</style>
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+
+
+
+
+<br>
+<br>
+<br>
+
+<center> Group members: Haoran Li(hl3083), Haozheng Ni(hn2318), Mingyang Ni(mn2813
+), Chuqi Yang(cy2478)  </center>
+
+
+<br>
+<center> keywords: scatterplots, shiny interactive plots, parallel coordinates plot, divergent bar plot, word cloud. </center>
+
+
+<br>
+<br>
+<br>
+
+# Introduction
+<br>
+<br>
+<br>
+
+
+The National Basketball Association (NBA) is a men's professional basketball league in North America. It is widely considered as the one of the most popular and successful leagues in the world. There is a huge market behind it which is supported by mature methodologies to analyze the performance and values of the players and the teams. However, we believe that these proven approaches towards NBA players and teams are not the only way to carry out meaningful analysis. Throughout our exploratory data analysis, we looked into several seemingly random aspects and eventually discovered that they are intrinsically related to the performance of the teams and the players. Integrating the new approach and the well proven approaches can bring us valuable insights into this indusry. 
+<br>
+
+Specifically, we believe that the performance of team or individual player in clutch time is of great importance. Clutch time is defined as the game play that takes place during the final five minutes of regulation or overtime where the winning team is ahead by five points or less. This is a vital moment when perseverance, team play and great talent shine. Therefore we hope to understand the performance of players and teams in such exciting time and hopefully we can propose stategies for individule teams. In this project we mainly use clutch time data in the season 16-17, because the season 17-18 has not yet came out.
+
+We analyzed the NBA numerical statistic data and Twitter data to propose stategies for individule teams during clutch time
+and to discover what are the hot topics for each individule team (do they differe accross teams and how do they form the overall NBA tweets.)<br>
+
+Along the we, we decided to focus our analysis on the Top 4 and Low 4 ranking NBA teams during the 2016-2017 season to see the difference accross them. 
+
+Our team is comprised of 4 members: Haoran Li(hl3083), Haozheng Ni(hn2318), Mingyang Ni(mn2813
+), Chuqi Yang(cy2478). Haoran Li is in charge of making use of static methods to analyze the relationship between various factors. Haozheng Ni takes the responsibility of creating interactive applications in Shiny. Mingyang Ni linked various parts together and produces the final reports. Chuqi Yang carried data collection, data cleaning and feeding process.
+<br>
+<br>
+<br>
+
+# Description of Data
+<br>
+<br>
+<br>
+
+We have two main sources of data:
+
+1. The numerical statistic data that comes from http://stats.nba.com/. This is an official website for NBA, thus the data is highly reliable. To our knowledge, there is no missing values or irregular(wrongly recorded) data. However, we do discovered some data inconsistencys. Further, the NBA  data exhibited some very interesting features, such as rounding pattern. Both data inconsistency and rounding patterns will illustrate in details in the Analysis of Data Quality section.
+
+2. Text data that comes from twitter API. This set of data is much more challenging compared to numerical statistic data. We have carried out extensive cleaning and transformation of the data to make it into a usable format. 
+<br>
+<br>
+<br>
+
+# Analysis of Data Quality
+<br>
+<br>
+<br>
+1. NBA numerical statistic data:
+
+We obtained both team-level and player-level data directly from the official website of NBA (through package nba_py in python). As showed in NBA_data, for each player, we collected the following statistics:
+'3 points field goal made'(3fgm),
+'3 points shooting percent'(3pct),
+'field goal made'(fgm),
+'shooting percent'(pct),
+'free throw attempt'(fta),
+'free throw made'(ftm),
+'points made'(pts)
+
+For each player we also collected the data about which team he belongs to during the 2016-2017 season. Combining the team-player information and player's personal statistics data, we calculated the following teams' statistics:
+
+'overall': the statistics of the player in the whole game. 
+
+'10sec_down_3': the statistics of the player in the last 10 seconds when his team was falling behind at most 3 points.
+
+'30sec_down_3': the statistics of the player in the last 30 seconds when his team was falling behind at most 3 points. 
+
+'1min_down_5': the statistics of the player in the last 1 minute when his team was falling behind at most 5 points. 
+
+'3min _down_5': the statistics of the player in the last 3 minutes when his team was falling behind at most 5 points. 
+
+'5min _down_5': the statistics of the player in the last 5 minutes when his team was falling behind at most 5 points. 
+
+'30sec_plusminus_5': the statistics of the player in the last 30 seconds when the differences between the scores of two teams is less than 5 points.
+
+'1min_plusminus_5': the statistics of the player in the last 1 minute when the differences between the scores of two teams is less than 5 points.
+
+'3min_plusminus_5': the statistics of the player in the last 3 minute when the differences between the scores of two teams is less than 5 points.
+
+'5min_plusminus_5': the statistics of the player in the last 5 minutes when the differences between the scores of two teams is less than 5 points.
+
+The data are in clean format and high quality. We did not observe any missing values or abnormal data. However, during our analysis, we discovered data inconsistency and rounding patterns. <br>
+
+Data inconsistency: There are several data inconsistency issues with our data set. 
+- Some plyers changed his team during the season; therefore, we adjusted the calculations of team statistics by segment this palyer's statistics into different teams.
+- Some palyers did not score during 2016-2017; therefore, we adjusted the clculation of the team statistics by weighting this palyers' statistics. 
+
+2. Twitter Data:
+
+We used Twitter official API to retrieve all the live tweets. We filtered the tweets to contain only posts that are related to NBA. We recorded the time and text, and separate them into different teams. Specifically, we used Python's tweeps package to establish a listener to receive data from Twitter Server, the mechanism is as long as there is a tweet with the keywords defined beforehand posted, the listener can receive the raw data which contains all the information of this tweet. Ideally, as long as there is new tweets, we will be able to retrive it and analyze it, however, we only takes tweets from 15:37:45 to 21:06:15(GMT Timezoon) Fri Apr 20 because this segmentation already provides a 7.64MB text data and is enough for the purpose of this project demonstration.
+
+The raw data is in json format, because the text we received is a string, it is hard to use existing package to analyse it automatically, so we extracted all the information by ourselves. For this project, we extracted the post time and tweet's text from json data, then cleaned the data by removing special chactacters, URL, etc. 
+
+After cleaning, we assigned the data to different dataset: for each team, if the team's name is mentioned in the tweet we would assign this data to the team's dataset. 
+
+Therefore, at the end, we are able to obtain 1 file for all tweets that are related to NBA, and multiple subet files that record the NBA Team pecific tweets. 
+
+Some questions we are asking are:
+- what are the hot topics for each individule team (do they differe accross teams and how do they form the overall NBA tweets)
+- Is there a time difference accross teams, meaning does one team always have tweets in certain hours that other teams hardly have. (Amazingly YES!)
+
+To answer the second question, we checked if there is any missing patterns in Twitter data(missing in terms of time). We first collected all timestamps of all tweets we received. For each timestamp, if any team does not have any tweet, we recorded that this team has a missing data at this timestamp.
+<br>
+
+Next we would like to introduce some findings in the NBA numerical statistic data: and twitter data.
+
+<br>
+<br>
+<br>
+
+Next we would like to introduce some findings in the NBA and twitter data itself.
+
+<br>
+<br>
+<br>
+
+## Rounding pattern on turnovers
+<br>
+<br>
+<br>
+
+```{r results='hide', message=FALSE, warning=FALSE}
+library(devtools)
+library(rgdal)
+library(GGally)
+library(ggplot2)
+library(plotly)
+library(scales)
+library(ggthemes)
+library(RColorBrewer)
+library(viridis)
+library(grid)
+library(gridExtra)
+library(ggimage)
+library(png)
+library(gridGraphics)
+library(dplyr)
+library(tidyr)
+library(forcats)
+#devtools::install_github('bart6114/artyfarty')
+library('artyfarty')
+library(tm)
+library(wordcloud)
+location = "C:/Users/Mingyang/Desktop/NBA_data/"
+clutch = read.csv(paste(location, 'fetched.csv', sep=""))
+df1 = clutch[,c('PF','TOV','team')]
+df1= gather(df1,type,count,-team)
+df1$count <-  ifelse(df1$type =="PF",df1$count*(-1),df1$count)
+temp = temp = df1[df1$type=='TOV',]
+new_levels=  as.character(temp[order(temp$count),]$team)
+df1$team = factor(df1$team,levels=new_levels)
+#df1 <- within(df1, team <- factor(team, levels=names(sort(count,  decreasing=TRUE))))
+df1 %>% ggplot(aes(x=team, y=count, fill=type))+
+  geom_bar(stat="identity",position="identity")+
+  xlab("counts")+ylab("name of teams")+
+  scale_fill_manual(values = pal("five38"))+
+  coord_flip()+ggtitle("Personal fouls (PF) and turnovers (TOV)")+
+  geom_hline(yintercept=0)+
+  ylab("counts")+
+  xlab("team name")+
+  scale_y_continuous(breaks = pretty(df1$count),labels = abs(pretty(df1$count)))+
+  theme_scientific()
+```
+<br>
+This plot displays average personal fouls and turnovers during clutch time for each team in the season of 16-17. This is of interest because it shows how teams control faults in face of vital moment. The interpretation will be in later section, but  we can observe a very obvious rounding pattern for the turnovers among teams. We can see that the turnovers are in groups of a few step sizes. This is very likely to be caused by the rounding in the data.
+
+
+
+
+<br>
+<br>
+<br>
+
+## Rounding pattern on free throw
+
+<br>
+<br>
+<br>
+
+```{r  message=FALSE, warning=FALSE}
+## Preprocess data to merge with the team 
+df_name_team = read.csv(paste(location, 'Name_Team.csv', sep=""))
+df_name_team = df_name_team[,c("PERSON_ID","Team_Name")]
+colnames(df_name_team)[1] = "player_id"
+
+df_name_team_abbr = read.csv(paste(location, 'abbr_team.csv', sep=""))
+
+my_read = function(path,team=df_name_team){
+  temp = read.csv(file=path)
+  final = merge(temp,team,by = "player_id",all=TRUE)
+  #final$Abbri = df_name_team_abbr
+  return(final[ ,!(colnames(final) == "X")])
+}
+
+
+df_3pct = my_read(path = paste(location,'3pct_df.csv', sep=""))
+df_3fgm = my_read(path = paste(location,'3fgm_df.csv', sep=""))
+
+df_3 = merge(df_3fgm,df_3pct,by = "player_id",all=TRUE)
+
+df_pct = my_read(path = paste(location,'pct_df.csv', sep=""))
+df_fgm = my_read(path = paste(location,'fgm_df.csv', sep=""))
+
+df_all = merge(df_fgm,df_pct,by = "player_id",all=TRUE)
+
+df_pts = my_read(path = paste(location,'pts_df.csv', sep=""))
+
+df_fta = my_read(path = paste(location,'fta_df.csv', sep=""))
+
+df_fct = my_read(path = paste(location,'fct_df.csv', sep=""))
+
+df_ftm = my_read(path = paste(location,'ftm_df.csv', sep=""))
+df_fta['df_ftm_30sec_plusmiuns_5'] = df_ftm$X30sec_plusminus_5
+df_fta_v1 =  df_fta
+df_fta_v1_2 = df_fta_v1[!is.na(df_fta$player_name),]
+p_fta_ftm = ggplot(df_fta_v1_2)+
+  geom_point(aes(X30sec_plusminus_5,
+                 df_ftm_30sec_plusmiuns_5,
+                 color = player_name,
+                 shape=Team_Name),
+             size = 1.3,
+             alpha=0.5)+
+  labs(title = "FTM VS FTA ",x = 'Free Throw Attempt', y='Free Throw Made')
+ggplotly(p_fta_ftm)
+```
+<br>
+
+The x-axis of this plot is the average of free throw attempt and y-axis is the average of free throw made by a player in the last 30 seconds with the difference of scores in 5 points between two teams. From the graph we can see that there is a obvious pattern in the data, for more than 300 players, the number of points in the scatter plot is less than 50.  And from the graph it is not hard to find out that both free throw attempt and free throw made data are rounded to one decimal.
+
+<br>
+<br>
+<br>
+
+## Missing value pattern for Twitter data
+
+<br>
+<br>
+<br>
+
+```{r  message=FALSE, warning=FALSE}
+phi = read.csv("C:/Users/Mingyang/Desktop/NBA_data/Twitter/By Team/preprocessed_76ers.csv",
+                  colClasses=c("NULL", NA, NA))
+sas =read.csv("C:/Users/Mingyang/Desktop/NBA_data/Twitter/By Team/preprocessed_Spurs.csv",
+                  colClasses=c("NULL", NA, NA))
+gsw = read.csv("C:/Users/Mingyang/Desktop/NBA_data/Twitter/By Team/preprocessed_Warriors.csv",
+                  colClasses=c("NULL", NA, NA))
+lal = read.csv("C:/Users/Mingyang/Desktop/NBA_data/Twitter/By Team/preprocessed_Lakers.csv",
+                  colClasses=c("NULL", NA, NA))
+temp_1 = merge(phi, sas,by ='time',  all=TRUE)
+names(temp_1) = c("time","phi", "sas")
+temp_1 = merge(temp_1, gsw,by ='time',  all=TRUE)
+names(temp_1) = c("time","phi", "sas","gsw")
+temp_1 = merge(temp_1, lal,by ='time',  all=TRUE)
+names(temp_1) = c("time","phi", "sas","gsw","lal")
+temp_1[temp_1=="[]"]=NA
+```
+
+
+```{r fig.height = 18, fig.width = 6, fig.align = "center", message=FALSE, warning=FALSE}
+#mydf = temp_1[sample(nrow(temp_1), 1000), ]## random sample 1000 rows/records
+
+my_missing = function(seg,title){
+  tidydf <- seg %>% 
+    gather(key, value, -time) %>%
+    mutate(missing = ifelse(is.na(value), "yes", "no"))
+  tidydf <- tidydf %>%
+    mutate(missing2 = ifelse(missing == "yes", 1, 0))
+  p = ggplot(tidydf, aes(x = fct_reorder(key, -missing2, sum), y = fct_reorder(time, -missing2, sum))) +
+    geom_tile(color = "white",aes(fill = missing))+
+    theme(axis.text.x=element_text(),
+        axis.text.y=element_text(size=2,angle=90))+
+    labs(title = title,x = 'Team', y='Time')+
+    scale_fill_manual(values=c("slategray2", "tomato2"))
+  return(p)
+}
+```
+
+```{r fig.height = 15, fig.width = 15, fig.align = "center", message=FALSE, warning=FALSE}
+###data is too huge seperate based on time to see pattern:
+#### 	02:00:00-5:00:00
+p1 = my_missing(temp_1[1:213,],title = "Missing 02:00:00-5:00:00")
+#### 15:30:00-16:00:00
+p2 = my_missing(temp_1[214:1002,],title = "Missing 15:30:00-16:00:00")
+####  16:00:00-16:30:00
+p3 = my_missing(temp_1[1003:1961,],title = "Missing 16:00:00-16:30:00")
+####  16:30:00-17:00:00
+p4 = my_missing(temp_1[1962:2829,],title = "Missing 16:30:00-17:00:00")
+####  17:00:00-17:30:00
+p5 = my_missing(temp_1[2829:3708,],title = "Missing 17:00:00-17:30:00")
+####  17:30:00-18:30:00
+p6 = my_missing(temp_1[3708:4667,],title = "Missing 17:30:00-18:30:00")
+####  18:30:00-19:00:00
+p7 = my_missing(temp_1[4667:5461,],title = "Missing 18:30:00-19:00:00")
+grid.arrange(p2,p3,p4,p5,p6, nrow = 1)
+```
+
+<br>
+In this plot, we want to discuss the missing value patterns in Twitter accross teams. Since the data is to long, in oder to facilitate visulization, we broke time into pices.  The time range is included in the title. Each column represents a team(phi, sas, gsw and lal) and each row represents a time point.
+From this plot, we can observe a pattern in the missing value of twitter data. We can observe that there is a concentration of missing values in the bottom 30% of the data. we set up the time point in such a way that for all 31 teams, at each point there has to be at least one tweet from any team. The missing values for the current 4 teams will mean that there are tweets from other teams which are not shown here. We have carried out extensive research online and checked out data serveal times to make sure we did not make any mistake. However, we did not find a valid explanation for this pattern.
+
+
+<br>
+<br>
+<br>
+
+#Main Analysis (Exploratory Data Analysis)
+
+<br>
+<br>
+<br>
+
+In our report, we have taken the Macro to Micro approach. We start with a brief overview of the whole league, then we narrow down to compare team-specific performances. Orignially, we have chosen all 31 teams and tried to analyze in our presentation. Then we realised that plotting 31 teams together actually makes it impossible to interpret. We therefore decided to analyze the top 2 and bottom 2 teams in each region. Eventually, we zoom into the analysis of individual players. Occassionally, we may break this structure to provide you with a better visual comparison bewteen different seemingly random perspectives and explain how they are related.
+<br>
+<br>
+<br>
+
+## Overview of the whole league 
+<br>
+<br>
+<br>
+
+
+###Total number pf games played vs number of wins 
+<br>
+<br>
+<br>
+
+```{r  message=FALSE, warning=FALSE}
+
+#number of games played vs number of wins
+df1 = clutch[,c('GP','W','team')]
+df1= gather(df1,type,count,-team)
+#df1$count <-  ifelse(df1$type =="W",df1$count*(-1),df1$count)
+temp = df1[df1$type=='GP',]
+new_levels=  as.character(temp[order(temp$count),]$team)
+df1$team = factor(df1$team,levels=new_levels)
+#df1 <- within(df1, team <- factor(team, levels=names(sort(count,  decreasing=TRUE))))
+df1 %>% ggplot(aes(x=team, y=count, fill=type))+
+  geom_bar(stat="identity",position="identity")+
+  xlab("number of games")+ylab("name of teams")+
+  scale_fill_manual(name="type of games",values = pal("five38"))+
+  coord_flip()+ggtitle("number of games played (GP) v.s number of wins (W)")+
+  geom_hline(yintercept=0)+
+  ylab("number of games")+
+  xlab("team name")+
+  scale_y_continuous(breaks = pretty(df1$count),labels = abs(pretty(df1$count)))+
+  theme_scientific()
+```
+
+This is the plot of number of clutch games played and wins for each team. Since clutch games played is always a superset of cltch wins, we plot number of wins(in red) inside total number of clutch games (in blue) to represent the ratio. From this simple plot, we can observe that the WAS played the largest number of cluth time, actually almost 2/3 games in the season for WAS(Washington Wizards) have clutch time. On the other hand, GSW(Golden State Warriors) played the least. Note that less clutch games does not necessarily mean the team is better, because chances are that they lose the game without entering clutch time. Howver, in general more clutch games show that the team cannot finish opponents with overwhelming advantages. Meanwhile, usually we think a better team is more united and can win the game in the clutch time, and the plot proves that. From the plot we can see the world champion in last year, GSW(Golden State Warriors), has a very high rate of win in clutch time, that means in some games that two teams have fair performance, GSW can usually take the win back to the bay area; however, the BKN(Brooklyn Nets)which ranked last one in the league last season, loses almost all clutch games. 
+
+
+<br>
+<br>
+<br>
+
+### Personal fouls (PF) and turnovers (TOV)
+<br>
+<br>
+<br>
+
+```{r  message=FALSE, warning=FALSE}
+
+df1 = clutch[,c('PF','TOV','team')]
+df1= gather(df1,type,count,-team)
+df1$count <-  ifelse(df1$type =="PF",df1$count*(-1),df1$count)
+temp = temp = df1[df1$type=='TOV',]
+new_levels=  as.character(temp[order(temp$count),]$team)
+df1$team = factor(df1$team,levels=new_levels)
+#df1 <- within(df1, team <- factor(team, levels=names(sort(count,  decreasing=TRUE))))
+df1 %>% ggplot(aes(x=team, y=count, fill=type))+
+  geom_bar(stat="identity",position="identity")+
+  xlab("counts")+ylab("name of teams")+
+  scale_fill_manual(values = pal("five38"))+
+  coord_flip()+ggtitle("Personal fouls (PF) and turnovers (TOV)")+
+  geom_hline(yintercept=0)+
+  ylab("counts")+
+  xlab("team name")+
+  scale_y_continuous(breaks = pretty(df1$count),labels = abs(pretty(df1$count)))+
+  theme_scientific()
+```
+
+We have seen this graph above for rounding pattern. The reason we bring up this plot again is due to its relationship with the following plot on concentration at the clutch time. In the clutch time, there are two things we should avoid, consider this two scenario: at the last 10 seconds, your team down 2 points to the opponent but hold the possession, that means you have the last chance to tie or win the game, however what if you turnover and give the possession to the opponent? Or if you lead 1 point in the last 10 seconds, but what if you foul on James Harden and give him two free throws (2 points potential)? So at the clutch time, your coach must require you to avoid turnovers and fouls. As we said above, better team should has fewer turnovers and fouls. From the plot we can find out PHI(Philadelphia 76ers) gave most turnover and one of the most fouls at the clutch time, which accords its rank(second to last in the eastern conference) in the league, the same thing is for SAC(Sacramento Kings, third to last in the western conference). Moreover, there is no team that has smallest numbers in both turnovers and fouls, which can be interpreted as there is no dominating team in terms of fault control in clutch time. 
+
+<br>
+<br>
+<br>
+
+
+### divergent plot on points decomposition
+
+<br>
+<br>
+<br>
+
+```{R  message=FALSE, warning=FALSE}
+df1 = clutch[,c('PCT_PTS_2PT','PCT_PTS_3PT','PCT_PTS_FT','team')]
+df1= gather(df1,type,count,-team)
+temp =  df1[df1$type=='PCT_PTS_2PT',]
+new_levels=  as.character(temp[order(temp$count),]$team)
+df1$team = factor(df1$team,levels=new_levels)
+df1$count <-  ifelse(df1$type =="PCT_PTS_2PT",df1$count*(-1),df1$count)
+
+df1 %>% ggplot(aes(x=team, y=count, fill=type))+
+  geom_col()+
+  xlab("percentage")+ylab("name of teams")+
+  scale_fill_manual(values = pal("five38"))+
+  coord_flip()+ggtitle("2PT%,3PT%,FT%")+
+  geom_hline(yintercept=0)+
+  ylab("percentage")+
+  xlab("team name")+
+  scale_y_continuous(breaks = pretty(df1$count),labels = abs(pretty(df1$count)))+
+  theme_scientific()
+```
+
+This plot gives us a very direct visual presentation on the decomposition of shooting percent of points by different teams. It contains the proportion of 3 points, 2 points and free throw for each team, and all sum as 1. In the clutch time, teams usually use the most familiar tactics they have, so in the plot, we can easily analyse the strategies of each team. For defensive coaches, maybe they can come up with corresponding defense strategies. For TOR(Toronto Raptors), it has largest proportion of 2-point field goal, it can be explained by that the best player of this team Demar DeRozan is one of the best players in mid-range jump shoot. As a natural result, it has one of the worst 3 points shoot percent in the league, maybe also because Demar DeRozan did not shoot 3 points very often. Therefore the oponents can leave some space for TOR's players to shoot three, but they should focus on preventing TOR shooters come closer to the basket. On the other hand, HOU(Houston Rockets) as a team devoted for three points shoot, its 3 points percentage is pretty high but it has lower two points shoot percens. The the opponets can tolerate some mid-range shoots but shoud definitely push harder Three-point line.
+
+
+<br>
+<br>
+<br>
+
+### Scatterplot on aggressiveness and defensiveness
+<br>
+<br>
+<br>
+
+```{R  message=FALSE, warning=FALSE}
+
+library(png)
+library(ggplot2)
+library(gridGraphics)
+library(ggimage)
+
+path = 'https://github.com/NiHaozheng/NBA-Visualization/blob/master/clutch_team/logo/'
+#img <- "https://github.com/NiHaozheng/NBA-Visualization/blob/master/clutch_team/logo/ATL.png?raw=true"
+df1 = clutch[,c('OFF_RATING','DEF_RATING','team')]
+df1$img = paste(path,df1$team,'.png?raw=true',sep='')
+ggplot(df1,aes(x=OFF_RATING,y=DEF_RATING))+geom_point()+
+  scale_y_reverse()+geom_image(image = df1$img, size = .05)+
+  theme_scientific()+
+  xlab('offensive rating')+ylab('defensive rating')
+```
+
+In this part of the analysis, we will provide an analysis on the interaction between the previous three plots. 
+<br>
+
+
+The scatter plot provides us a demonstration of how offensive or defensive the team is during clutch time. The exact definition of offensive rating and defensive rating are quite complicated so we omit it here. Intuitively the higher offensive rating this team is , the more goals it can make, while the less defensive rating means opponents can make less points. We can observe that MIL is a very defensive team with a very low offensive rating. BOS(Boston Celtics) is a very offensive team with the highest offensive rating while its defensive ability is not outstanding enough. 
+<br>
+
+Teams like OKC(Oklahoma City Thunder), SAS(San Antonio Spurs) and WAS(Washington Wizards) have high ratings in both scales. This is an indication of their strong performance in both defence and offence which can be seen as a proof for strong teams. This is further supported by our plot on total clutch games matches played and number of wins. WAS has the highest number of absolute wins. OKC and SAS have their winning rate among the top 5. 
+<br>
+
+
+We would expect an aggressive team to have a larger number of personal foul. However, by comparing the plot on personal fouls and the offensive rating. There does not seem to be a direct relationship between them. This means that a team with good defense ability does not mean they will incur more personal fouls.
+<br>
+
+
+Interaction between score decomposition plots and defense-offense plot is also very interesting. Is there a relation between aggressiveness and the way they score? As we have mentioned before: TOR has the highest percentage of 2PT and a very low percentage of 3pt. However, CLE is completely opposite side. We can observe that TOR has a very high defensive rating while CLE has a very high offensive rating. One potential explanation will be that 3 pts is viewed as a much riskier and more offensive scoring method as compared to the much safer 2 pts.
+
+In the mean time, for teams have bad performance in both offense and defensive like PHI, MIA, BKN, PHX, they are all young teams (in terms of average ages of players) and the best players in those teams are usually under 22 years old. We can safely say that rookies can not take as much pressure as veterans can take, so in general they perform worse when the big moment comes.
+<br>
+<br>
+<br>
+
+
+### Traditional measure on TSP VS PTS
+<br>
+<br>
+<br>
+```{r fig.height = 5, fig.width = 8, fig.align = "center", message=FALSE, warning=FALSE}
+# Define FGA: Field Goal Attempt 
+FGA = df_fgm$overall / df_fct$overall
+# Define TSP: True shooting percent 
+TSP = df_pts$overall/(2*(FGA+0.44*df_fta$overall))
+df_pts['TSP'] = TSP
+# Make a copy of df_pts
+df_pts_v1 = df_pts
+# Subset to remove all the NAs due to players that did not have a team or did not play in 2016
+df_pts_v1_2 = df_pts_v1[!is.na(df_pts_v1$TSP),]
+
+##==================================================================
+#Plot on whole data, all teams 
+p_TSP = ggplot(df_pts_v1_2)+
+  geom_point(aes(overall,TSP,color = player_name),size = 1)+
+  facet_wrap(~Team_Name)+
+  labs(title = "TSP V.S PTS Facet on Team",x = 'Overall PTS', y='Overall TSP')
+ggplotly(p_TSP)
+
+TopLowTeam = c("Celtics","Cavaliers","Warriors","Spurs","Lakers","Suns","76ers","Nets")
+TopLowP_TSP = df_pts_v1_2[df_pts_v1_2$Team_Name %in% TopLowTeam,]
+TopLowP_TSP['Rank'] = ifelse(TopLowP_TSP$Team_Name %in% c("Celtics","Cavaliers","Warriors","Spurs"), "Top4", "Down4")
+p_TSP = ggplot(TopLowP_TSP)+
+  geom_point(aes(X5min_plusminus_5,TSP,color = player_name,shape=Rank),size = 2)+
+  facet_wrap(~Team_Name)+
+  labs(title = "TSP VS PTS with 5mins+/-5pts",x = 'PTS', y='TSP')
+ggplotly(p_TSP)
+```
+ <br>
+
+ From a micro level, we can observe from the graph that in top4, the best players will take over the game in the clutch time, like Lebron Jame in Caverliers, Kyrie Irvine in Celtics, Kawhi Leonard in Spurs, Ste phen Curry and Kevin Durant in Warroris, the reason may be coaches usually trust the best players, and they will make most of the shoots. But it is worth to note that there are some good player in those team that can perform exceptionally well in clutch time, for example, Kyler Korver in Caverliers,  Danny Green in Spurs, maybe they should share more shoots.
+ <br>
+
+From a macro level, we can see that strong teams like Celtics and Spurs have a very high True shooting percentage. This is the traditional measure of the performance of a team. Moreover, we have analyzed before that spurs have a high 3pt ratio, yet the rate is so high, it is a reflection of the quality of the team members and leading to the good performance of the team.
+
+<br>
+
+
+Hence, in this part, we illsutrated that we should not look at the traditional data or our data alone. We should integrate them. Spurs true shooting rate is good on its own. However, coupled with its high 3 pcts attempts and its aggressive style, this makes it more valuable.
+
+<br>
+Moreover, if we look at TSP alone, we can actually find 76er have a pretty decent performance. However, if we cross-reference with its defensive strategy and high 2pct ratio. This figure may not be as convincing. This is one example of how we can integrate the traditional data and the alternative data.
+
+
+<br>
+<br>
+<br>
+
+
+
+
+## Team specific analysis
+<br>
+<br>
+<br>
+
+In the section, we zoom down to the top 2 and bottom 2 teams in both the east and west regions. Instead of analyzing the tradtional team statistics, we choose to look at the team performance in the clutch time. Unlike other sports, the last few seconds in a basketball match can make a huge difference. Furthermore, NBA players do not have a huge difference in their performance in normal times as compared to other sports. In the clutch time, when every player is on their term, it is a true test of their mental stability, stamina and skills. Their difference in abilities and performance will be amplified in the final few seconds. Therefore, we believe that analyzing clutch time performance can give us great insight into the performance of the team.
+
+<br>
+<br>
+<br>
+
+
+
+### 3pcts vs 3fgm Facet on Top4Last4
+<br>
+<br>
+<br>
+```{r  message=FALSE, warning=FALSE}
+#Plot on Top4 Last4
+df_3pct['df_3fgm_overall']=df_3fgm$overall
+df_pct3_v1 =  df_3pct
+df_pct3_v1_2 = df_pct3_v1[!is.na(df_3fgm$player_name),]
+
+TopLowP_TSP = df_pct3_v1_2[df_pct3_v1_2$Team_Name %in% TopLowTeam,]
+TopLowP_TSP['Rank'] = ifelse(TopLowP_TSP$Team_Name %in% c("Celtics","Cavaliers","Warriors","Spurs"), "Top4", "Down4")
+
+p_3FGM3PCT = ggplot(TopLowP_TSP)+
+  geom_point(aes(df_3fgm_overall,overall,color = player_name,shape=Rank),size = 1)+
+  facet_wrap(~Team_Name)+
+  labs(title = "3pct_overall V.S 3fgm_overall",x = '3fgm_overall', y='3pct_overall')
+ggplotly(p_3FGM3PCT)
+```
+<br>
+This is a traditional method to analyze the performance of the team. 3 points is an important way to score in the basketball game and has a dominant effect on the final results of the game. Like our previous analysis, all top 4 teams have very high 3 poins rate. The rate is extremely high for Spurs which confirms our previous analysis.
+
+
+<br>
+<br>
+<br>
+
+###Team Average Overall fgm
+
+```{r fig.height = 5, fig.width = 5, fig.align = "center", results='hide',message=FALSE, warning=FALSE}
+##==================================================================
+#Plot on All team
+
+df_all$Team_Name.x = as.factor(df_all$Team_Name.x)
+countorder = df_all %>% group_by(Team_Name.x) %>% summarize(av=mean(overall.x, na.rm=TRUE))
+
+#df_all = merge(df_fgm,df_pct,by = "player_id",all=TRUE)
+ggplot(countorder, aes(reorder(Team_Name.x,av),av)) + 
+  geom_col(color = "tomato", fill = "orange", alpha = .2)+
+  coord_flip()+
+  theme_scientific()+
+  labs(title = "Team Average Overall fgm",x = 'Team', y='Average Overall fgm')
+
+##==================================================================
+#Plot on Top4 Last4
+TopLowP_TSP_1 = df_all[df_all$Team_Name.y %in% TopLowTeam,]
+countorder = TopLowP_TSP_1 %>% group_by(Team_Name.x) %>% summarize(av=mean(overall.x, na.rm=TRUE))
+countorder['Rank'] = ifelse(countorder$Team_Name.x %in% c("Celtics","Cavaliers","Warriors","Spurs"), "Top4", "Down4")
+#countorder
+countorder
+ggplot(countorder, aes(reorder(Team_Name.x,av),av,fill = Rank)) + 
+  geom_col()+
+  coord_flip()+
+  theme_scientific()+
+  labs(title = "Team Average Overall fgm",x = 'Team', y='Average Overall fgm')+
+  scale_colour_colorblind("Rank",
+                          labels=countorder$Rank)
+```
+
+Team average overall fgm is a very important traditional factor to measure the performance of the team. We can observe that strong teams do have the tendency to have higher fgm. Spurs seems to be an outlier. However, if we combine our figure  with our previous analysis on the agressvieness of Spurs, the high 3 points ratio and the high sucess rate. The relatively low overall fgm can be easily understood. This is another example of how we can link various part together to derive meaning results.
+
+
+<br>
+<br>
+<br>
+
+### Coordinates plot
+
+
+```{r fig.height = 5, fig.width = 14, fig.align = "center", message=FALSE, warning=FALSE}
+
+# average within group 3point
+
+
+cbP = c("#999999", "#E69F00", "#56B4E9", "#009E73",
+        "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+df_3fgm_sum = aggregate(df_3fgm[,3:12], list(df_3fgm$Team_Name), sum, na.rm = TRUE)
+deno = df_3fgm/df_3pct[,1:13]
+deno$player_name = df_3fgm$player_name
+deno$player_id = df_3fgm$player_id
+deno$Team_Name = df_3fgm$Team_Name
+deno_modi = aggregate(deno[,3:12], list(deno$Team_Name), sum, na.rm = TRUE)
+average3point = df_3fgm_sum/deno_modi
+average3point$Group.1=deno_modi$Group.1
+average3point[is.na(average3point)] = 0
+
+TopLowTeam = c("Celtics","Cavaliers","Warriors","Spurs",
+               "Lakers","Suns","76ers","Nets")
+TopLow3point = average3point[average3point$Group.1 %in% TopLowTeam,]
+
+RK = ifelse(TopLow3point$Group.1 %in% c("Celtics","Cavaliers","Warriors","Spurs"), "Top4", "Down4")
+TopLow3point['TRk']= RK 
+#TopLow3point
+p1 = ggparcoord(data = TopLow3point,
+                columns =2:7,
+                mapping=aes(color=as.factor(Group.1),
+                            linetype = as.factor(TRk)),
+                scale = 'globalminmax'
+                )+
+  scale_linetype_discrete("Rank",
+                          labels=TopLow3point$TRk)+
+  #scale_color_discrete("Team",
+  #                     labels=TopLow3point$Group.1)+
+  geom_vline(xintercept = 0:6, color = "lightblue")+
+  theme(axis.text.x=element_text(angle=90))+
+  labs(title = "Average 3PT Last Xmin yDown Top4 V.S Low4",x = 'Indicator', y='Team Average')+
+  scale_colour_colorblind("Team",
+                       labels=TopLow3point$Group.1)
+
+p2 = ggparcoord(data = TopLow3point,
+                columns =c(2,8:11),
+                mapping=aes(color=as.factor(Group.1),
+                            linetype = as.factor(TRk)),
+                scale = 'globalminmax'
+                )+
+  scale_linetype_discrete("Rank",
+                          labels=TopLow3point$TRk)+
+  #scale_color_discrete("Team",
+  #                     labels=TopLow3point$Group.1)+
+  geom_vline(xintercept = 0:6, color = "lightblue")+
+  theme(axis.text.x=element_text(angle=90))+
+  labs(title = "Average 3PT Last Xmin yDownorHiger Top4 V.S Low4",x = 'Indicator', y='Team Average')+
+  scale_colour_colorblind("Team",
+                       labels=TopLow3point$Group.1)
+
+```
+
+
+```{r fig.height = 12, fig.width = 14, fig.align = "center", message=FALSE, warning=FALSE}
+# average within group all point
+
+
+
+cbP = c("#999999", "#E69F00", "#56B4E9", "#009E73",
+        "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+df_fgm_sum = aggregate(df_fgm[,3:12], list(df_fgm$Team_Name), sum, na.rm = TRUE)
+deno = df_fgm/df_pct[,1:13]
+deno$player_name = df_fgm$player_name
+deno$player_id = df_fgm$player_id
+deno$Team_Name = df_fgm$Team_Name
+deno_modi = aggregate(deno[,3:12], list(deno$Team_Name), sum, na.rm = TRUE)
+averagepoint = df_fgm_sum/deno_modi
+averagepoint$Group.1=deno_modi$Group.1
+averagepoint[is.na(averagepoint)] = 0
+
+TopLowTeam = c("Celtics","Cavaliers","Warriors","Spurs",
+               "Lakers","Suns","76ers","Nets")
+TopLowpoint = averagepoint[averagepoint$Group.1 %in% TopLowTeam,]
+
+RK = ifelse(TopLowpoint$Group.1 %in% c("Celtics","Cavaliers","Warriors","Spurs"), "Top4", "Down4")
+TopLowpoint['TRk']= RK 
+#averagepoint
+
+
+p3 = ggparcoord(data = TopLowpoint,
+                columns =2:7,
+                mapping=aes(color=as.factor(Group.1),
+                            linetype = as.factor(TRk)),
+                scale = 'globalminmax'
+                )+
+  scale_linetype_discrete("Rank",
+                          labels=TopLow3point$TRk)+
+  #scale_color_discrete("Team",
+  #                     labels=TopLow3point$Group.1)+
+  geom_vline(xintercept = 0:6, color = "lightblue")+
+  theme(axis.text.x=element_text(angle=90))+
+  labs(title = "Average TotalPT Last Xmin yDown Top4 V.S Low4",x = 'Indicator', y='Team Average')+
+  scale_colour_colorblind("Team",
+                       labels=TopLowpoint$Group.1)
+
+p4 = ggparcoord(data = TopLowpoint,
+                columns =c(2,8:11),
+                mapping=aes(color=as.factor(Group.1),
+                            linetype = as.factor(TRk)),
+                scale = 'globalminmax'
+                )+
+  scale_linetype_discrete("Rank",
+                          labels=TopLow3point$TRk)+
+  #scale_color_discrete("Team",
+  #                     labels=TopLow3point$Group.1)+
+  geom_vline(xintercept = 0:6, color = "lightblue")+
+  theme(axis.text.x=element_text(angle=90))+
+  labs(title = "Average TotalPT Last Xmin yDownorHiger Top4 V.S Low4",x = 'Indicator', y='Team Average')+
+  scale_colour_colorblind("Team",
+                       labels=TopLowpoint$Group.1)
+
+grid.arrange(p1, p2, p3, p4, nrow = 2)
+```
+<br>
+<br>
+<br>
+
+
+
+
+From this coordinates plot we can observe here that, traditonal performance measure in clutch time  fails to gives us a good indication. This did not meet our expectation, as our original statement was to native to ignore why clutch time will happen in the first place. When a strong team enter clutch time, it is usually due to the major players are in bad shape that day or they will have finished the game in main time. That is why clutch time fails to give us a good indication.
+
+
+<br>
+<br>
+<br>
+
+### Further analysis on 30s clutch time
+```{r fig.height = 5, fig.width = 8, fig.align = "center", message=FALSE, warning=FALSE}
+##==================================================================
+#Plot on ALL
+df_pct['df_fgm_overall']=df_fgm$overall
+df_pct_v1 =  df_pct
+df_pct_v1_2 = df_pct_v1[!is.na(df_fgm$player_name),]
+
+
+p_FGMPCT = ggplot(df_pct_v1_2)+
+  geom_point(aes(df_fgm_overall,overall,color = player_name),size = 1)+
+  facet_wrap(~Team_Name)+
+  labs(title = "pct_overall VS fgm_overall ",x = 'fgm', y='pct')
+ggplotly(p_FGMPCT)
+
+df_pct['df_fgm_overall']=df_fgm$X30sec_plusminus_5
+df_pct_v1 =  df_pct
+df_pct_v1_2 = df_pct_v1[!is.na(df_fgm$player_name),]
+
+TopLowP_TSP = df_pct_v1_2[df_pct_v1_2$Team_Name %in% TopLowTeam,]
+TopLowP_TSP['Rank'] = ifelse(TopLowP_TSP$Team_Name %in% c("Celtics","Cavaliers","Warriors","Spurs"), "Top4", "Down4")
+
+p_FGMPCT = ggplot(TopLowP_TSP)+
+  geom_point(aes(df_fgm_overall,X30sec_plusminus_5,color = player_name,shape=Rank),size = 2)+
+  facet_wrap(~Team_Name)+
+  labs(title = "pct VS fgm last 30sec+/-5pts",x = 'fgm', y='pct')
+ggplotly(p_FGMPCT)
+
+
+
+```
+<br>
+In the plot, we take a deeper look at the final 30s when the score is tight. This situation is different from the situation above, because in last 30 seconds with plus or down 3 points, everything can happen. This is the real clutch time, but the same thing is that people usually think in this time we should give the ball to the best players to handle. The interesting is Warriors, who is the champion of the last season, the two best players in the team, Kevin Durant and Stephen Curry both have very low pct and fgm compared to the their normal statistics. This confirmed that our previous analysis when a strong team enters clutch time, the star players are usually not performing well that day. However Shawn Livingston the player with more than 10 years' experience in NBA seems more productive in last 30 seconds' clutch time. Same thing can be found in the other top 4 teams, veterans usually have better performance, like Al Horford in Celtics, Tony Park in Spurs, even though they are now not the one of the best players in the team, but they can be the best in the clutch time. Advice for coaches: give the ball to veterans and adjust your strategy based on the actual performance of the players on that day.
+
+The colour for players seems redundant. However, the reason we used this method is bacause we want to display the play list at the right side which allows us to do the selection on players. At the same time, for the top4 and low4 plot. we differentiate the top teams with a triangle and the bottom teams with a circle. The colour does not convey any meaning besides allowing us to have the interactive list on the right hand side. This definition is consistent across all the plots in our reports. We will not reiterate in the following parts. (we have tried to solve the issue with the label of y-axis by adjusting various parameters. It worked perfectly on local file, but failed in html. We have done various research online and this seems to be a plot issue.)
+
+
+
+
+###  3pts average 10second down figure plot(top4 down4)
+```{r fig.height = 5, fig.width = 14, fig.align = "center", message=FALSE, warning=FALSE}
+##==================================================================
+#Plot on All Teams
+averagepoint=averagepoint[2:31,]
+averagepoint['abbr'] = df_name_team_abbr[,1]
+
+average3point=average3point[2:31,]
+average3point['abbr'] = df_name_team_abbr[,1]
+
+path = 'https://github.com/NiHaozheng/NBA-Visualization/blob/master/clutch_team/logo/'
+averagepoint$img = paste(path,averagepoint$abbr,'.png?raw=true',sep='')
+average3point$img = paste(path,average3point$abbr,'.png?raw=true',sep='')
+
+
+##==================================================================
+#Plot on Top4 Last4
+TopLowP_TSP_1 = averagepoint[averagepoint$Group.1 %in% TopLowTeam,]
+TopLowP_TSP_2 = average3point[average3point$Group.1 %in% TopLowTeam,]
+
+p3 = ggplot(TopLowP_TSP_1,aes(overall,X10sec_down_3))+
+  geom_point()+
+  geom_image(image = TopLowP_TSP_1$img,
+             size = .05)+
+  theme_scientific()+
+  labs(title = "3pt Average 10sec_down_3 v.s. Overall TopDown4",x = 'Overall', y='X10sec_down_3')
+
+p4 = ggplot(TopLowP_TSP_2,aes(overall,X10sec_down_3))+
+  geom_point()+
+  geom_image(image = TopLowP_TSP_2$img,
+             size = .05)+
+  theme_scientific()+
+  labs(title = "Total Average  X10sec_down_3 v.s. Overall TopDown4",x = 'Overall', y='X10sec_down_3')
+grid.arrange(p3, p4, nrow = 1)
+```
+<br>
+<br>
+<br>
+Although the tradtional method in general fails to give us the result we are looking for. The 3pt average performance in the last 10 seconds is highly correlated with the ranking of the team. This figure plot gives us a clear visual representation of the data. One potential reason for this will be 
+strong teams usually have a greater player pool, they will have p points shooter designated for the final shoot. This is why strong team in general have a better last 10 second performance(despite the star players may not in a good shape as we have explained above)
+
+
+
+
+<br>
+<br>
+<br>
+
+
+
+
+
+
+
+## Player specific analysis
+<br>
+<br>
+<br>
+
+As for individuals, we mainly covers the shooting pattern and missing rate. This will be covered in detail with our interactive components
+<br>
+<br>
+<br>
+
+## Miscellaneous plots without significant discoveries
+
+<br>
+<br>
+<br>
+
+During our analysis, we have looked have a large number of plots and explored many different aspects. However, we cannot obtain meaningful patterns from some of them. We simply included them in this section to demonstrate the path we have taken.
+<br>
+<br>
+<br>
+
+### TSP VS PTS All Star
+
+<br>
+
+```{r fig.height = 5, fig.width = 8, fig.align = "center", message=FALSE, warning=FALSE}
+# Define FGA: Field Goal Attempt 
+FGA = df_fgm$overall / df_fct$overall
+# Define TSP: True shooting percent 
+TSP = df_pts$overall/(2*(FGA+0.44*df_fta$overall))
+df_pts['TSP'] = TSP
+# Make a copy of df_pts
+df_pts_v1 = df_pts
+# Subset to remove all the NAs due to players that did not have a team or did not play in 2016
+df_pts_v1_2 = df_pts_v1[!is.na(df_pts_v1$TSP),]
+
+##==================================================================
+#Plot on whole data, all teams 
+
+p_TSP_All = ggplot(df_pts_v1_2)+
+  geom_point(aes(overall,TSP,color = player_name,shape = Team_Name),size = 2)+
+  labs(title = "TSP V.S PTS All Star",x = 'Overall PTS', y='Overall TSP')
+ggplotly(p_TSP_All)
+```
+<br>
+<br>
+<br>
+
+### TSP VS PTS on X5min_plusminus_5
+
+```{r  message=FALSE, warning=FALSE}
+# Define FGA: Field Goal Attempt on X5min_plusminus_5
+FGA = df_fgm$X5min_plusminus_5 / df_fct$X5min_plusminus_5
+# Define TSP: True shooting percent 
+TSP = df_pts$X5min_plusminus_5/(2*(FGA+0.44*df_fta$X5min_plusminus_5))
+df_pts['TSP'] = TSP
+# Make a copy of df_pts
+df_pts_v1 = df_pts
+# Subset to remove all the NAs due to players that did not have a team or did not play in 2016
+df_pts_v1_2 = df_pts_v1[!is.na(df_pts_v1$TSP),]
+
+
+p_TSP_All = ggplot(df_pts_v1_2)+
+  geom_point(aes(X5min_plusminus_5,TSP,color = player_name,shape = Team_Name),size = 2)+
+  labs(title = "TSP VS PTS All Star",x = 'PTS', y='TSP')
+ggplotly(p_TSP_All)
+
+```
+
+<br>
+<br>
+<br>
+
+### 3pcts_overall VS 3fgm_overall
+
+```{r fig.height = 5, fig.width = 8, fig.align = "center", message=FALSE, warning=FALSE}
+##==================================================================
+#Plot on All Team
+
+df_3pct['df_3fgm_overall']=df_3fgm$overall
+df_pct3_v1 =  df_3pct
+df_pct3_v1_2 = df_pct3_v1[!is.na(df_3fgm$player_name),]
+p_3FGM3PCT_All = ggplot(df_pct3_v1_2)+
+  geom_point(aes(df_3fgm_overall,overall,color = player_name,shape = Team_Name),size = 2)+
+  labs(title = "3pct_all V.S 3fgm_all ",x = '3fgm_overall', y='3pct_overall')
+ggplotly(p_3FGM3PCT_All)
+```
+<br>
+
+Although this plot does not carry valuable information to our main analysis. This plot has a very interesting pattern. The X values are discrete rather than continuous if you select a region to zoom in. This is the same as the pattern we have discussed before.
+
+<br>
+<br>
+<br>
+
+### ftm_30sec_plusmiuns_5
+
+```{r fig.height = 5, fig.width = 8, fig.align = "center", message=FALSE, warning=FALSE}
+##==================================================================
+#Plot on All teams
+
+df_fta['df_ftm_30sec_plusmiuns_5'] = df_ftm$X30sec_plusminus_5
+df_fta_v1 =  df_fta
+df_fta_v1_2 = df_fta_v1[!is.na(df_fta$player_name),]
+p_fta_ftm = ggplot(df_fta_v1_2)+
+  geom_point(aes(X30sec_plusminus_5,
+                 df_ftm_30sec_plusmiuns_5,
+                 color = player_name,
+                 shape=Team_Name),
+             size = 1.3,
+             alpha=0.5,
+            position = "jitter")+
+  labs(title = "FTA VS FTM 30sec+/-5pts",x = 'fta', y='ftm')
+ggplotly(p_fta_ftm)
+```
+<br>
+
+This is the jitter version of our plots in the section #3.2. However, we do not discover any pattern here.
+
+<br>
+<br>
+<br>
+
+### 1min_down5 plot
+
+```{r fig.height = 15, fig.width = 15, fig.align = "center", message=FALSE, warning=FALSE}
+#Plot on Top4 Last4
+TopLowP_TSP_1 = df_pct[df_pct$Team_Name %in% TopLowTeam,]
+ggplot()+
+  geom_point(data =TopLowP_TSP_1,
+             aes(x = X1min_down_5, y= overall),
+             position = position_jitter(w = 0.01, h = 0.02),
+             alpha = 0.5,
+             size = 3)+
+  facet_wrap(~Team_Name)+
+  labs(title = "overall V.S X1min_down_5",
+       x = 'X1min_down_5', 
+       y='overall')
+```
+
+
+
+### pair plots
+
+```{r fig.height = 20, fig.width = 20, fig.align = "center", message=FALSE, warning=FALSE}
+pairs(df_all[c("X10sec_down_3.x","X10sec_down_3.y","X30sec_down_3.x","X30sec_down_3.y")])
+```
+
+```{r fig.height = 20, fig.width = 20, fig.align = "center"}
+#df_all
+pairs(df_all[c("X1min_down_5.x","X1min_down_5.y",
+               "X3min._down_5.x","X3min._down_5.y",
+               "X5min._down_5.x","X5min._down_5.y")])
+```
+
+```{r fig.height = 20, fig.width = 20, fig.align = "center", message=FALSE, warning=FALSE}
+#df_all
+pairs(df_all[c("X30sec_plusminus_5.x","X30sec_plusminus_5.y",
+               "X1min_plusminus_5.x","X1min_plusminus_5.y",
+               "X3min_plusminus_5.x","X3min_plusminus_5.y")])
+```
+
+
+
+
+
+# Executive Summary (Presentation-style)
+
+<br>
+<br>
+<br>
+
+## Shiny shooting map
+
+The target audience of our report is the sports team mangers or investors. We would like to focus more on the general performance of the team and how to devise strategies for the team based on our information. In the presentation, we will first start with the following plot: 
+
+```{r  message=FALSE, warning=FALSE}
+
+#number of games played vs number of wins
+df1 = clutch[,c('GP','W','team')]
+df1= gather(df1,type,count,-team)
+#df1$count <-  ifelse(df1$type =="W",df1$count*(-1),df1$count)
+temp = df1[df1$type=='GP',]
+new_levels=  as.character(temp[order(temp$count),]$team)
+df1$team = factor(df1$team,levels=new_levels)
+#df1 <- within(df1, team <- factor(team, levels=names(sort(count,  decreasing=TRUE))))
+df1 %>% ggplot(aes(x=team, y=count, fill=type))+
+  geom_bar(stat="identity",position="identity")+
+  xlab("number of games")+ylab("name of teams")+
+  scale_fill_manual(name="type of games",values = pal("five38"))+
+  coord_flip()+ggtitle("number of games played (GP) v.s number of wins (W)")+
+  geom_hline(yintercept=0)+
+  ylab("number of games")+
+  xlab("team name")+
+  scale_y_continuous(breaks = pretty(df1$count),labels = abs(pretty(df1$count)))+
+  theme_scientific()
+```
+<br>
+
+This plot will allow the executives to have a brief overview of where each team is standing in the league.
+
+
+
+Then, we will shift our focus to the shooting pattern of the individual players in our shiny plot. The shiny plot will allow us to have a direct visualization on the shooting pattern and the missing rate of each player. This will allow the managers to come up with strategies on who to take the final shot, where to take the final shot to maximize the winning rate, etc. This will also allow the opponent teams to think of defense tactics given the shooting behaviors of each player. For example, if one particular player has a low successful shooting rate in the middle region, then one defense tactic is to push him to that region and make tough shots. We will illustrate with an example in the following part:
+<br>
+
+
+
+Let's take the shooting pattern of Kobe in 14-15 season for example. The following graph displays all the 3 points Kobe have attempted in the final minutes of the game.
+<br>
+![Hexagonal](C:/Users/Mingyang/Desktop/shiny4.png)
+<br>
+The follinwg graph will display the points that are successfully made. We can see that Kobe actually misses more than half of the 3 points. More interestingly, Kobe seems to be more comfortable with shooting from the right side of the court. Then opponets should be aware such shooting preference and make corresponding defense strategies.
+<br>
+![Hexagonal](C:/Users/Mingyang/Desktop/shiny5.png)
+<br>
+As a basketball team manager, the most intuitive thing will be to look at the shooting pattern of all players within the team so that he can decide which person to choose for the final shoot. He can also advise Kobe to take the shoot from the right side to maximise his success rate. As the manager from the opponent team, when Kobe is in control of the ball, he can ask the team to push aggressively on the right or prevent Kobe from reaching that region.
+<br>
+
+
+
+
+<br>
+
+## Shiny Word Cloud
+
+As a basketball manager, the team's public image is of high importance. It is directly related to the sponsorships and fundings of the team. We can observe some interesting public options which can allow us to devise our advertising strategies.
+
+### Word Cloud on Warriors
+![Hexagonal](C:/Users/Mingyang/Desktop/shiny8.png)
+<br>
+We can observe that for warriors, the most popular is Stephen Curry and the most concerned opponent is Spurs. With this in mind, the team manager can put more emphasis on branding Curry and give more publicity to Curry to meet the demand from the public.
+
+### Word Cloud on Lakers
+![](C:/Users/Mingyang/Desktop/shiny9.png)
+
+<br>
+Lakers' fans seem to focus more on players at the time. For example, Kawhi Leonard, maybe due to a rumor about the possibility of trade between spurs and lakers about Kawhi. Paul George has the same situation because last off-sseason's statement that we wanted to play for this hometown--Los Angles Lakers. We can see the word "trade"'s high popularity within the tweets. As a team manager, when the rumor among the public is too strong, he needs to take certain action to make sure the rumor does not do any harm to the team. Our word cloud can be a quick way to have a glimpse over the public opinions.
+<br>
+
+In conclusion, Instead of coming up with a general conclusion for the executives, we do feel that having a flexible system that everyone can use easily to get the information they need is much more useful. An industry like NBA is just too flexible, it is almost impossible for us to come up with a conclusion that fit everyone, therefore, a half-tailored system will allow the executives to get their desired results most easily.
+<br>
+<br>
+<br>
+
+# Interactive Component
+<br>
+<br>
+<br>
+
+We have created an interactive plot using shiny. This program is inspired by the open-source ballr project. It will automatically fetch data from the nba.stat.com based on your selection. Our data only covers the clutch time, which is the final few minutes of the match. We want to explore if a player or a team exhibit any pattern of shooting in the final minutes. We will also explore which players have a high score rate and what is his favourite shooting regions. We believe understanding the scoring pattern and distribution of shooting locations can give valuable information to the teams themselves who can leverage on this information to devise clutch time strategies and their opponents who can make use of the information to counter them. We have put in 3 formats of plot:  hexagonal, scatter, and heat map.
+
+<br>
+<br>
+<br>
+
+## Shoot Map
+
+<br>
+<br>
+<br>
+
+### Chart options
+
+<br>
+
+
+#### Scatter
+Scatter charts are the most straightforward option: they show the location of each individual shot, with color-coding for makes and misses.
+<br>
+![Hexagonal](C:/Users/Mingyang/Desktop/shiny2.png)
+<br>
+
+#### Heat map
+Heat map charts use two-dimensional kernel density estimation to show the distribution of shot attempts across the court. Unsurprisingly, that most shot attempts are taken in the restricted area near the basket. 
+<br>
+![Hexagonal](C:/Users/Mingyang/Desktop/shiny3.png)
+<br>
+<br>
+<br>
+
+#### Hexagonal
+Hexagonal charts use R's hexbin package to bin shots into hexagonal regions. The size and opacity of each hexagon are proportional to the number of shots taken within that region, and the color of each hexagon represents your choice of metric. Hex plot not only shows the frequency of shots by shape, but also displays the successful rate by color, which is more meaningful than heatmap.
+
+There is one slide to adjust the maximum hexagon sizes. For example, here's the same Stephen Curry chart but with larger hexagons, and plotting points per shot as the color metric. The color metrics are not plotted at the individual hexagon level, but at the court region level.
+<br>
+![Hexagonal](C:/Users/Mingyang/Desktop/shiny1.png)
+
+<br>
+
+
+
+
+
+
+
+### Instructions
+<br>
+
+
+In order to use our plot: 
+<br>
+
+
+1:select the team and players on the top side of the page. 
+<br>
+
+
+2:select the season
+<br>
+
+3:select the minutes remaining (which has been set to 5 to analyse clutch time)
+<br>
+
+4:select your choice of chart and the details of the chart
+<br>
+
+5:select the shot zones, shot angles, shot distance, FG made/Miss from the dropdown box
+<br>
+
+
+
+
+
+
+<br>
+<br>
+<br>
+
+
+### Potential improvements
+<br>
+<br>
+<br>
+
+In out plot, we only choose time as a horizon to select data. However, we believe it will be valuable to observe if the shooting pattern of the players changes over time. Hence, in the future, we may choose time as another variable on the plot instead of just using it to select the data. 
+
+While trying to publish the website, we encountered some difficulties. The program runs perfectly locally and we included all the package we have used in the code. I have also posted a question on the blog for R-users after taking the advice from the Professor. However, there does not seem to be any meaningful solution. One potential reason it because that our program is too large for it too load. We keep getting time out error. I have double checked with the professor and she confirmed that we can use the local version for our shoot map. The following code will allow you to run the program stored in my github.
+
+shiny::runGitHub("NBA", "NiHaozheng",subdir = "shoot map/")
+
+<br>
+<br>
+<br>
+
+## Word Cloud
+<br>
+<br>
+<br>
+In order to visualise the public opinions about the team and what they are looking for from the team. We have created a word cloud in Shiny. In the word cloud, we crawled the data from twitter and cleaned the text data to make it into a usable format. We have removed Punctuations, Numbers, English Stop words and stiped whitespaces. The wordcloud is uploaded onto the website:https://haozheng1995.shinyapps.io/wordcloud/ . A screen of the interface is provided below:
+![Hexagonal](C:/Users/Mingyang/Desktop/shiny6.png)
+<br>
+This is much easier to use as comparied to our shoot map. You only need to select the time horizon of the twitter you are interested in from the bar on the left side. If you move your mouse over onto the word, it will display the number of times that word appeared. In order to emphasis the importance of the top opinions and for the sake of clearity, we only coloured the top 5 words.
+<br>
+<br>
+<br>
+
+
+### Potential improvements
+<br>
+<br>
+<br>
+The weakness of our wordcloud is that we have preprosessed the data with python. It is not able to retrieve data online within the program due to the noisy text data. In the future, we may want to improve on this program so that i can retrieve data and clean them within itself.
+<br>
+<br>
+<br>
+
+# Conclusion
+<br>
+<br>
+<br>
+During our project, the scope we want to achieve is too large. Despite narrowing our focus to clutch time performance, We tried to cover the too many aspects of the basketball match. This makes our analysis too dispersed and lacks depth and a clear progress between different part of the analysis. In the future, we may want to zoom even deeper into a small part of the match and carry out indepth analysis into it. For example, an indepth analysis on the final 10 second performance of the players and the strategy of the coaches under different situations. 
+<br>
+<br>
+We have also learnt we should not be too obsessed of representing each team individually. Even have 8 colours for 8 different team can be pretty distracting in our plot. Next time, we may consider only have two colours, one for the top 4 teams and one for the bottom 4 teams. This may give us better visual presentaiton and may allow us to find some interesting patterns.
+<br>
+<br>
+Despite the above limitations, we still believe that our project has been a success. We have analysed data which have been overlood by the current analysis and established valuable connection with the traditional methods. These new approach can be used as alternative indicators of performance when the traditional approach fails to serve the purpose. Our presentation to the executives does not aim to convey a solution. Instead, we provided tool and strategies for coaches and managers to devise strategies which fit their team best.
+
+<br>
+<br>
+<br>
