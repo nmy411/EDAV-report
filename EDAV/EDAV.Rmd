@@ -155,7 +155,7 @@ Next we would like to introduce some findings in the NBA and twitter data itself
 <br>
 <br>
 
-```{r }
+```{r results='hide', message=FALSE, warning=FALSE}
 library(devtools)
 library(rgdal)
 library(GGally)
@@ -213,7 +213,7 @@ This plot displays average personal fouls and turnovers during clutch time for e
 <br>
 <br>
 
-```{r }
+```{r results='hide', message=FALSE, warning=FALSE}
 ## Preprocess data to merge with the team 
 df_name_team = read.csv(paste(location, 'Name_Team.csv', sep=""))
 df_name_team = df_name_team[,c("PERSON_ID","Team_Name")]
@@ -273,7 +273,7 @@ The x-axis of this plot is the average of free throw attempt and y-axis is the a
 <br>
 <br>
 
-```{r}
+```{r results='hide', message=FALSE, warning=FALSE}
 phi = read.csv("C:/Users/Mingyang/Desktop/NBA_data/Twitter/By Team/preprocessed_76ers.csv",
                   colClasses=c("NULL", NA, NA))
 sas =read.csv("C:/Users/Mingyang/Desktop/NBA_data/Twitter/By Team/preprocessed_Spurs.csv",
@@ -292,7 +292,7 @@ temp_1[temp_1=="[]"]=NA
 ```
 
 
-```{r fig.height = 18, fig.width = 6, fig.align = "center"}
+```{r fig.height = 18, fig.width = 6, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
 #mydf = temp_1[sample(nrow(temp_1), 1000), ]## random sample 1000 rows/records
 
 my_missing = function(seg,title){
@@ -311,7 +311,7 @@ my_missing = function(seg,title){
 }
 ```
 
-```{r fig.height = 15, fig.width = 15, fig.align = "center"}
+```{r fig.height = 15, fig.width = 15, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
 ###data is too huge seperate based on time to see pattern:
 #### 	02:00:00-5:00:00
 p1 = my_missing(temp_1[1:213,],title = "Missing 02:00:00-5:00:00")
@@ -360,7 +360,7 @@ In our report, we have taken the Macro to Micro approach. We start with a brief 
 <br>
 <br>
 
-```{r }
+```{r results='hide', message=FALSE, warning=FALSE}
 
 #number of games played vs number of wins
 df1 = clutch[,c('GP','W','team')]
@@ -394,7 +394,7 @@ This is the plot of number of clutch games played and wins for each team. Since 
 <br>
 <br>
 
-```{r }
+```{r results='hide', message=FALSE, warning=FALSE}
 
 df1 = clutch[,c('PF','TOV','team')]
 df1= gather(df1,type,count,-team)
@@ -428,7 +428,7 @@ We have seen this graph above for rounding pattern. The reason we bring up this 
 <br>
 <br>
 
-```{R}
+```{R results='hide', message=FALSE, warning=FALSE}
 df1 = clutch[,c('PCT_PTS_2PT','PCT_PTS_3PT','PCT_PTS_FT','team')]
 df1= gather(df1,type,count,-team)
 temp =  df1[df1$type=='PCT_PTS_2PT',]
@@ -460,7 +460,7 @@ This plot gives us a very direct visual presentation on the decomposition of sho
 <br>
 <br>
 
-```{R}
+```{R results='hide', message=FALSE, warning=FALSE}
 
 library(png)
 library(ggplot2)
@@ -504,7 +504,7 @@ In the mean time, for teams have bad performance in both offense and defensive l
 <br>
 <br>
 <br>
-```{r fig.height = 5, fig.width = 8, fig.align = "center"}
+```{r fig.height = 5, fig.width = 8, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
 # Define FGA: Field Goal Attempt 
 FGA = df_fgm$overall / df_fct$overall
 # Define TSP: True shooting percent 
@@ -572,7 +572,7 @@ In the section, we zoom down to the top 2 and bottom 2 teams in both the east an
 <br>
 <br>
 <br>
-```{r}
+```{r results='hide', message=FALSE, warning=FALSE}
 #Plot on Top4 Last4
 df_3pct['df_3fgm_overall']=df_3fgm$overall
 df_pct3_v1 =  df_3pct
@@ -597,7 +597,7 @@ This is a traditional method to analyze the performance of the team. 3 points is
 
 ###Team Average Overall fgm
 
-```{r fig.height = 5, fig.width = 5, fig.align = "center"}
+```{r fig.height = 5, fig.width = 5, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
 ##==================================================================
 #Plot on All team
 
@@ -636,7 +636,7 @@ Team average overall fgm is a very important traditional factor to measure the p
 ### Coordinates plot
 
 
-```{r fig.height = 5, fig.width = 14, fig.align = "center"}
+```{r fig.height = 5, fig.width = 14, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
 
 # average within group 3point
 
@@ -696,7 +696,7 @@ p2 = ggparcoord(data = TopLow3point,
 ```
 
 
-```{r fig.height = 12, fig.width = 14, fig.align = "center"}
+```{r fig.height = 12, fig.width = 14, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
 # average within group all point
 
 
@@ -772,7 +772,7 @@ From this coordinates plot we can observe here that, traditonal performance meas
 <br>
 
 ### Further analysis on 30s clutch time
-```{r fig.height = 5, fig.width = 8, fig.align = "center"}
+```{r fig.height = 5, fig.width = 8, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
 ##==================================================================
 #Plot on ALL
 df_pct['df_fgm_overall']=df_fgm$overall
@@ -809,7 +809,7 @@ In the plot, we take a deeper look at the final 30s when the score is tight. Thi
 
 
 ### 3pts average 10second down figure plot
-```{r fig.height = 5, fig.width = 8, fig.align = "center"}
+```{r fig.height = 5, fig.width = 8, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
 ##==================================================================
 #Plot on All Teams
 averagepoint=averagepoint[2:31,]
@@ -884,7 +884,7 @@ During our analysis, we have looked have a large number of plots and explored ma
 ### TSP VS PTS All Star
 <br>
 
-```{r fig.height = 5, fig.width = 8, fig.align = "center"}
+```{r fig.height = 5, fig.width = 8, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
 # Define FGA: Field Goal Attempt 
 FGA = df_fgm$overall / df_fct$overall
 # Define TSP: True shooting percent 
@@ -907,7 +907,7 @@ ggplotly(p_TSP_All)
 <br>
 <br>
 ### TSP VS PTS on X5min_plusminus_5
-```{r}
+```{r results='hide', message=FALSE, warning=FALSE}
 # Define FGA: Field Goal Attempt on X5min_plusminus_5
 FGA = df_fgm$X5min_plusminus_5 / df_fct$X5min_plusminus_5
 # Define TSP: True shooting percent 
@@ -929,7 +929,7 @@ ggplotly(p_TSP_All)
 <br>
 <br>
 ### 3pcts_overall VS 3fgm_overall
-```{r fig.height = 5, fig.width = 8, fig.align = "center"}
+```{r fig.height = 5, fig.width = 8, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
 ##==================================================================
 #Plot on All Team
 
@@ -945,7 +945,7 @@ ggplotly(p_3FGM3PCT_All)
 <br>
 <br>
 ### ftm_30sec_plusmiuns_5
-```{r fig.height = 5, fig.width = 8, fig.align = "center"}
+```{r fig.height = 5, fig.width = 8, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
 ##==================================================================
 #Plot on All teams
 
@@ -968,7 +968,7 @@ ggplotly(p_fta_ftm)
 <br>
 <br>
 ### 1min_down5 plot
-```{r fig.height = 15, fig.width = 15, fig.align = "center"}
+```{r fig.height = 15, fig.width = 15, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
 #Plot on Top4 Last4
 TopLowP_TSP_1 = df_pct[df_pct$Team_Name %in% TopLowTeam,]
 ggplot()+
@@ -986,7 +986,7 @@ ggplot()+
 
 
 ### pair plots
-```{r fig.height = 20, fig.width = 20, fig.align = "center"}
+```{r fig.height = 20, fig.width = 20, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
 pairs(df_all[c("X10sec_down_3.x","X10sec_down_3.y","X30sec_down_3.x","X30sec_down_3.y")])
 ```
 
@@ -997,7 +997,7 @@ pairs(df_all[c("X1min_down_5.x","X1min_down_5.y",
                "X5min._down_5.x","X5min._down_5.y")])
 ```
 
-```{r fig.height = 20, fig.width = 20, fig.align = "center"}
+```{r fig.height = 20, fig.width = 20, fig.align = "center",results='hide', message=FALSE, warning=FALSE}
 #df_all
 pairs(df_all[c("X30sec_plusminus_5.x","X30sec_plusminus_5.y",
                "X1min_plusminus_5.x","X1min_plusminus_5.y",
@@ -1018,7 +1018,7 @@ pairs(df_all[c("X30sec_plusminus_5.x","X30sec_plusminus_5.y",
 
 The target audience of our report is the sports team mangers or investors. We would like to focus more on the general performance of the team and how to devise strategies for the team based on our information. In the presentation, we will first start with the following plot: 
 
-```{r }
+```{r results='hide', message=FALSE, warning=FALSE}
 
 #number of games played vs number of wins
 df1 = clutch[,c('GP','W','team')]
@@ -1181,8 +1181,7 @@ In out plot, we only choose time as a horizon to select data. However, we believ
 
 While trying to publish the website, we encountered some difficulties. The program runs perfectly locally and we included all the package we have used in the code. I have also posted a question on the blog for R-users after taking the advice from the Professor. However, there does not seem to be any meaningful solution. One potential reason it because that our program is too large for it too load. We keep getting time out error. I have double checked with the professor and she confirmed that we can use the local version for our shoot map. The following code will allow you to run the program stored in my github.
 
-library(shiny)
-runGitHub("shootmap", "nmy411")
+shiny::runGitHub("NBA", "NiHaozheng",subdir = "shoot map/")
 
 <br>
 <br>
