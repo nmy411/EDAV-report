@@ -118,7 +118,22 @@ We have two main sources of data. The numerical data come from http://stats.nba.
 <br>
 <br>
 
-We obtained the team-level and player-level data directly from the official website of NBA (through public API in python), and the data are in clean format and high quality. We did not observe any missing values or abnormal data. However, during our analysis, we discovered a rounding pattern. <br>
+We obtained the team-level and player-level data directly from the official website of NBA (through package nba_py in python); as showed in NBA_data, we collect statistics: '3 points field goal made'(3fgm), '3 points shooting percent'(3pct), 'field goal made'(fgm), 'shooting percent'(pct), 'free throw attempt'(fta), 'free throw made'(ftm), and 'points made'(pts) for each player; and for each player we collect the data which team he belongs to, so combine the team-player information and player's personal statistics data, we can calculate the accurate teams' statistics data.
+
+For each statistics, like points made, we collect the data of this statistics in those situations: 
+1. 'overall', which means the statistics of the player in the whole game. 
+2. '10sec_down_3' which means the statistics of the player in the last 10 seconds with his team was falling behind at most 3 points.
+3. '30sec_down_3' which means the statistics of the player in the last 30 seconds with his team was falling behind at most 3 points. 
+4. '1min_down_5' which means the statistics of the player in the last 1 minute with his team was falling behind at most 5 points. 
+5. '3min _down_5' which means the statistics of the player in the last 3 minutes with his team was falling behind at most 5 points. 
+6. '5min _down_5' which means the statistics of the player in the last 5 minutes with his team was falling behind at most 5 points. 
+7. '30sec_plusminus_5' which means the statistics of the player in the last 30 seconds with the differences between the scores of two teams is less than 5.
+8. '1min_plusminus_5' which means the statistics of the player in the last 1 minute with the differences between the scores of two teams is less than 5.
+9. '3min_plusminus_5' which means the statistics of the player in the last 3 minute with the differences between the scores of two teams is less than 5.
+10. '5min_plusminus_5' which means the statistics of the player in the last 5 minutes with the differences between the scores of two teams is less than 5.
+
+
+The data are in clean format and high quality. We did not observe any missing values or abnormal data. However, during our analysis, we discovered a rounding pattern. <br>
 
 For Twitter data: We use Twitter official API to retrieve all the live tweets posted regarding NBA; record the time and text, and separate them into different teams. Specifically, we use Python’s tweeps package to establish a listener to receive data from Twitter Server, the mechanism is as long as there is a tweet with the keywords defined beforehand posted, the listener can receive the raw data which contains all the information of this tweet. 
 
@@ -241,7 +256,7 @@ p_fta_ftm = ggplot(df_fta_v1_2)+
                  shape=Team_Name),
              size = 1.3,
              alpha=0.5)+
-   labs(title = "FTM VS FTA ",x = 'Free Throw Attempt', y='Free Throw Made')
+  labs(title = "df_ftm_30sec_plusmiuns_5 V.S X30sec_plusminus_5 ",x = 'X30sec_plusminus_5', y='df_ftm_30sec_plusmiuns_5')
 ggplotly(p_fta_ftm)
 ```
 <br>
