@@ -796,7 +796,7 @@ TopLowP_TSP['Rank'] = ifelse(TopLowP_TSP$Team_Name %in% c("Celtics","Cavaliers",
 p_FGMPCT = ggplot(TopLowP_TSP)+
   geom_point(aes(df_fgm_overall,X30sec_plusminus_5,color = player_name,shape=Rank),size = 2)+
   facet_wrap(~Team_Name)+
-  labs(title = "pct_X30sec_plusminus_5 V.S fgm_X30sec_plusminus_5 Facet on Top4Last4",x = 'fgm_X30sec_plusminus_5', y='pct_X30sec_plusminus_5')
+  labs(title = "pct VS fgm last 30sec+/-5pts",x = 'fgm', y='pct')
 ggplotly(p_FGMPCT)
 
 
