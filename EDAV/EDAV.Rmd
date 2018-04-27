@@ -2,9 +2,9 @@
 title: <center> <h1>EDAV final project on NBA </h1> </center>
 
 
-output: 
+output:
   html_document:
-    code_folding:hide
+    code_folding: hide
     number_sections: true
     toc: true
 sansfont: Calibri Light
