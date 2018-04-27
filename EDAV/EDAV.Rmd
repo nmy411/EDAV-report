@@ -274,22 +274,23 @@ The x-axis of this plot is the average of free throw attempt and y-axis is the a
 <br>
 
 ```{r}
-pro_76 = read.csv("C:/Users/Mingyang/Desktop/NBA_data/Twitter/By Team/preprocessed_76ers.csv",
+phi = read.csv("C:/Users/Mingyang/Desktop/NBA_data/Twitter/By Team/preprocessed_76ers.csv",
                   colClasses=c("NULL", NA, NA))
-pro_spurs =read.csv("C:/Users/Mingyang/Desktop/NBA_data/Twitter/By Team/preprocessed_Spurs.csv",
+sas =read.csv("C:/Users/Mingyang/Desktop/NBA_data/Twitter/By Team/preprocessed_Spurs.csv",
                   colClasses=c("NULL", NA, NA))
-pro_warriours = read.csv("C:/Users/Mingyang/Desktop/NBA_data/Twitter/By Team/preprocessed_Warriors.csv",
+gsw = read.csv("C:/Users/Mingyang/Desktop/NBA_data/Twitter/By Team/preprocessed_Warriors.csv",
                   colClasses=c("NULL", NA, NA))
-pro_lakers = read.csv("C:/Users/Mingyang/Desktop/NBA_data/Twitter/By Team/preprocessed_Lakers.csv",
+lal = read.csv("C:/Users/Mingyang/Desktop/NBA_data/Twitter/By Team/preprocessed_Lakers.csv",
                   colClasses=c("NULL", NA, NA))
-temp_1 = merge(pro_76, pro_spurs,by ='time',  all=TRUE)
-names(temp_1) = c("time","76er", "spurs")
-temp_1 = merge(temp_1, pro_warriours,by ='time',  all=TRUE)
-names(temp_1) = c("time","76er", "spurs","pro_warriours")
-temp_1 = merge(temp_1, pro_lakers,by ='time',  all=TRUE)
-names(temp_1) = c("time","76er", "spurs","pro_warriours","pro_lakers")
+temp_1 = merge(phi, sas,by ='time',  all=TRUE)
+names(temp_1) = c("time","phi", "sas")
+temp_1 = merge(temp_1, gsw,by ='time',  all=TRUE)
+names(temp_1) = c("time","phi", "sas","gsw")
+temp_1 = merge(temp_1, lal,by ='time',  all=TRUE)
+names(temp_1) = c("time","phi", "sas","gsw","lal")
 temp_1[temp_1=="[]"]=NA
 ```
+
 
 ```{r fig.height = 18, fig.width = 6, fig.align = "center"}
 #mydf = temp_1[sample(nrow(temp_1), 1000), ]## random sample 1000 rows/records
